@@ -1,0 +1,17 @@
+// 重新定义了部分 Bootstrap 的变量
+
+$blue: #0366d6;
+$black: #000000;
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1240px
+);
+
+// 导航栏 navbar-light 的颜色
+// input 输入后阴影的大小
+$input-btn-focus-width: 0.05rem;
+
+$h1-font-size: 2.2rem;

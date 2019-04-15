@@ -1,0 +1,32 @@
+{
+	"private": true,
+	"name": "go-markdown-blog",
+	"version": "1.0.1",
+	"description": "Blog pages.",
+	"scripts": {
+		"dev": "npm run development",
+		"development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --env.mixfile=config/webpack.mix.js",
+		"watch": "npm run development -- --watch",
+		"watch-poll": "npm run watch -- --watch-poll",
+		"prod": "npm run production",
+		"production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js --env.mixfile=config/webpack.mix.js"
+	},
+	"keywords": [
+		"blog",
+		"BroQiang"
+	],
+	"author": "https://github.com/broqiang",
+	"license": "MIT",
+	"devDependencies": {
+		"bootstrap": "^4.3.1",
+		"cross-env": "^5.2.0",
+		"jquery": "^3.4.0",
+		"laravel-mix": "^4.0.15",
+		"popper.js": "^1.15.0",
+		"resolve-url-loader": "2.3.1",
+		"sass": "^1.18.0",
+		"sass-loader": "^7.1.0",
+		"vue": "^2.6.10",
+		"vue-template-compiler": "^2.6.10"
+	}
+}

@@ -1,0 +1,27 @@
+
+// 引入变量，重写了一些 bootstrap 用到的变量
+@import 'variables';
+
+@import '~bootstrap/scss/bootstrap';
+
+@import 'ali-icons/iconfont';
+
+// 下面所有用到的变量有自定义和 bootstrap 自带的，尽量使用 bootstrap 的变量，可以样式统一
+
+// Global
+
+body {
+    // background-color: #eff6fa;
+    background-color: #F5F7F9;
+    //  background-color: $white;
+}
+
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
