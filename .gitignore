@@ -1,0 +1,9 @@
+/node_modules
+/vendor
+/.idea
+/.vscode
+.swp
+npm-debug.log
+yarn-error.log
+.env
+/mix-manifest.json
