@@ -15,7 +15,7 @@ func JoinPath(absolutePath, relativePath string) string {
 
 	finalPath := path.Join(absolutePath, relativePath)
 
-	if lastChar(finalPath) != '/' && lastChar(relativePath) == '/' {
+	if LastChar(finalPath) != '/' && LastChar(relativePath) == '/' {
 		finalPath += "/"
 	}
 
@@ -23,8 +23,8 @@ func JoinPath(absolutePath, relativePath string) string {
 
 }
 
-// 获取字符串的最后一个字符
-func lastChar(str string) uint8 {
+// LastChar 获取字符串的最后一个字符
+func LastChar(str string) uint8 {
 	if str == "" {
 		return 0
 	}
@@ -32,7 +32,8 @@ func lastChar(str string) uint8 {
 	return str[len(str)-1]
 }
 
-func nameOfFunction(f interface{}) string {
+// NameOfFunction 获取函数的名称
+func NameOfFunction(f interface{}) string {
 	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 }
 

@@ -1,6 +1,11 @@
 package bro
 
-import "net/http"
+import (
+	"net/http"
+)
+
+// PanicHandler 处理 panic 恢复的 Handler
+type PanicHandler func(http.ResponseWriter, *http.Request, interface{})
 
 // Engine 主引擎
 type Engine struct {
@@ -15,6 +20,15 @@ type Engine struct {
 	RedirectFixedPath bool
 
 	NotFound http.Handler
+
+	PanicHandler PanicHandler
+}
+
+// Default 默认的初始化，注册了 Recovery 中间件
+func Default() *Engine {
+	engine := New()
+
+	return engine
 }
 
 // New 初始化引擎
@@ -35,7 +49,24 @@ func New() *Engine {
 	return &engine
 }
 
+func (engine *Engine) recv(w http.ResponseWriter, r *http.Request) {
+	if rec := recover(); rec != nil {
+		SystemLogPanic(rec)
+
+		if engine.PanicHandler != nil {
+			engine.PanicHandler(w, r, rec)
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(http.StatusText(http.StatusInternalServerError)))
+	}
+}
+
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	defer engine.recv(w, r)
+
 	path := r.URL.Path
 
 	if root := engine.trees[r.Method]; root != nil {

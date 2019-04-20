@@ -25,7 +25,7 @@ func (c *Context) Next() {
 
 // HandlerName 获取注册的 Handler 名称
 func (c *Context) HandlerName() string {
-	return nameOfFunction(c.handlers.Last())
+	return NameOfFunction(c.handlers.Last())
 }
 
 // Handler 获取注册的 Handler， 最后一个是最终的 Handler ，前面的都是中间件

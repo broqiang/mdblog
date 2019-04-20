@@ -35,6 +35,20 @@ type (
 	}
 )
 
+// Group 定义路由分组
+func (group *RouterGroup) Group(relativePath string, handlers ...Handler) *RouterGroup {
+	return &RouterGroup{
+		Handlers: group.combineHandlers(handlers),
+		path:     JoinPath(group.path, relativePath),
+		engine:   group.engine,
+	}
+}
+
+// Use 使用中间件
+func (group *RouterGroup) Use(handlers ...Handler) {
+	group.Handlers = group.combineHandlers(handlers)
+}
+
 // GET 注册 GET 方式的路由
 func (group *RouterGroup) GET(relativePath string, handlers ...Handler) {
 	group.handle("GET", relativePath, handlers)
@@ -95,6 +109,8 @@ func (group *RouterGroup) Handle(method, relativePath string, handlers ...Handle
 func (group *RouterGroup) handle(method, relativePath string, handlers Handlers) {
 	path := JoinPath(group.path, relativePath)
 	handlers = group.combineHandlers(handlers)
+
+	SystemLogRoute(method, path, handlers)
 
 	root := group.engine.trees[method]
 	if root == nil {

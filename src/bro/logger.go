@@ -22,6 +22,11 @@ func SystemLogError(err error) {
 	}
 }
 
+// SystemLogPanic 记录 Panic 时候的错误日志
+func SystemLogPanic(err interface{}) {
+	SystemLogf("[Panic] %v", err)
+}
+
 // SetSystemLogWriter 定义日志输出到哪个 Writer
 func SetSystemLogWriter(writer io.Writer) {
 	sl.SetOutput(writer)
@@ -30,9 +35,11 @@ func SetSystemLogWriter(writer io.Writer) {
 // SystemLogRoute 注册路由的日志
 func SystemLogRoute(httpMethod, absolutePath string, handlers Handlers) {
 	handlerNumbers := len(handlers)
-	handlerName := nameOfFunction(handlers.Last())
+	handlerName := NameOfFunction(handlers.Last())
 
-	SystemLogf("register router. method: %s, handlerName: %s ,total handlers:  %d\n", httpMethod, handlerName, handlerNumbers)
+	sl.Output(2,
+		fmt.Sprintf(" register router:\n\tMethod: %s, \n\tPath: %s \n\tHandlerName: %s \n\tTotal handlers:  %d\n\n",
+			httpMethod, absolutePath, handlerName, handlerNumbers))
 }
 
 // SystemLogln 写入系统日志（非访问日志），每一条一行
