@@ -1,17 +1,13 @@
 package main
 
-import (
-	"log"
-	"net/http"
-)
+import "github.com/gin-gonic/gin"
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello"))
-		return
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
 	})
-
-	server := &http.Server{Addr: ":8080"}
-
-	log.Fatalln(server.ListenAndServe())
+	r.Run() // 监听并在 0.0.0.0:8080 上启动服务
 }
