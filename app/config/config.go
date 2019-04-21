@@ -15,9 +15,8 @@ import (
 const filePath = "config/config.toml"
 
 var (
-	cfg Config
-
 	once sync.Once
+	cfg  Config
 )
 
 // Config 配置文件类型

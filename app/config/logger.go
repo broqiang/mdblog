@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"path"
 	"time"
@@ -24,11 +25,28 @@ const (
 	// 默认配置，当不能获取到相应的配置时，使用这里定义的默认配置
 	// ************************************************
 
-	defaultLogMode = LogStdout
-
 	// 日志的默认格式，当配置文件没有配置的时候使用这个
 	defaultFormat = "2006-01/02"
 )
+
+// Logger 日志结构
+type Logger struct {
+	*LogWriter
+	*log.Logger
+}
+
+// NewLogInfo 初始化普通日志
+func NewLogInfo() Logger {
+	l := Logger{
+		LogWriter: getSysLog(),
+	}
+
+	l.Logger = log.New(l.LogWriter, "[info] ", log.LstdFlags)
+
+	return l
+}
+
+var defaultLogWriter *LogWriter
 
 // LogWriter 定义日志输出的结构
 type LogWriter struct {
@@ -45,10 +63,36 @@ type LogWriter struct {
 	subDir string
 }
 
+func getSysLog() *LogWriter {
+	if defaultLogWriter == nil {
+		defaultLogWriter = NewSysLog()
+	}
+
+	return defaultLogWriter
+}
+
 // NewSysLog 初始化 LogWriter
 func NewSysLog() *LogWriter {
 	lw := LogWriter{fileName: "sys.log"}
 
+	lw.setDefaultConfig()
+	lw.setWriter()
+
+	log.Println(lw)
+
+	return &lw
+}
+
+// AccessLogWriter 返回访问日志的 Writer， 暂时是配合 gin 使用
+func AccessLogWriter() *os.File {
+	al := NewAccessLog()
+
+	return al.File
+}
+
+// NewAccessLog 初始化访问日志
+func NewAccessLog() *LogWriter {
+	lw := LogWriter{fileName: "access.log"}
 	lw.setDefaultConfig()
 	lw.setWriter()
 
@@ -63,8 +107,10 @@ func (lw *LogWriter) setWriter() {
 
 	if cfg.Log.Mode == "file" {
 		lw.File = lw.newFile()
+		return
 	}
 
+	log.Println(cfg)
 }
 
 // GetFileName 获取日志文件的名称
