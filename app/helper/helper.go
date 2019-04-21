@@ -3,7 +3,10 @@ package helper
 
 import (
 	"fmt"
+	"html/template"
 	"runtime"
+
+	"github.com/broqiang/mdblog/app/helper/markdown"
 )
 
 // Panicf 用来打印指定格式的 panic 信息，
@@ -28,4 +31,9 @@ func PanicErr(err error) {
 		}
 		panic(fmt.Sprintf(format, values...))
 	}
+}
+
+// MarkdownToHTML 将 markdown 文档转换成 template.HTML
+func MarkdownToHTML(input string) template.HTML {
+	return markdown.HTML(input)
 }

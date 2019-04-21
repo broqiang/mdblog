@@ -17825,8 +17825,8 @@ try {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/bro/go/src/github.com/broqiang/go-markdown-blog/resources/assets/js/app.js */"./resources/assets/js/app.js");
-module.exports = __webpack_require__(/*! /home/bro/go/src/github.com/broqiang/go-markdown-blog/resources/assets/sass/app.scss */"./resources/assets/sass/app.scss");
+__webpack_require__(/*! /home/bro/go/src/github.com/broqiang/mdblog/resources/assets/js/app.js */"./resources/assets/js/app.js");
+module.exports = __webpack_require__(/*! /home/bro/go/src/github.com/broqiang/mdblog/resources/assets/sass/app.scss */"./resources/assets/sass/app.scss");
 
 
 /***/ })

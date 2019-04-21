@@ -1,7 +1,16 @@
 package app
 
 import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
+
+	"github.com/broqiang/go-blog/app/helper"
 	"github.com/broqiang/mdblog/app/config"
+	"github.com/broqiang/mdblog/app/config/mylog"
+	"github.com/broqiang/mdblog/app/routes"
+	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -9,14 +18,64 @@ const (
 	VERSION = "1.0.0"
 )
 
-// Cfg 加载配置文件
-var Cfg = config.New()
-
-// SysLog 系统日志输出的 Writer
-var SysLog = config.NewSysLog()
+var cfg = config.Cfg
 
 // Init 初始化
-func Init() {
-	// 初始化配置
-	// engine := gin.Default()
+func Init() *gin.Engine {
+	// 初始化日志配置
+	setDefaultConfig()
+
+	// 初始化引擎
+	engine := gin.Default()
+
+	// 初始化模板相关的内容
+	loadTemplate(engine)
+
+	// 配置路由
+	routes.New(engine)
+
+	return engine
+}
+
+func setDefaultConfig() {
+	if cfg.Debug {
+		gin.SetMode(gin.DebugMode)
+
+		return
+	}
+
+	gin.SetMode(gin.ReleaseMode)
+	gin.DisableConsoleColor()
+
+	if cfg.Log.Mode == mylog.LogFile && cfg.Log.Access {
+		gin.DefaultWriter = mylog.NewAccessLog()
+		return
+	}
+
+	gin.DefaultWriter = ioutil.Discard
+}
+
+func loadTemplate(e *gin.Engine) {
+	root := config.Root
+
+	// 初始化静态文件路径
+	e.StaticFS("/public", http.Dir(root+"/resources/static"))
+	// 初始化 favicon 图标
+	e.StaticFile("/favicon.ico", root+"/resources/static/favicon.ico")
+
+	// 初始化模板中的自定义函数
+	e.FuncMap = funcMap()
+
+	// 初始化模板
+	e.LoadHTMLGlob(root + "/resources/views/*/*")
+}
+
+func funcMap() map[string]interface{} {
+	return map[string]interface{}{
+		// markdown 转 html
+		"markdowntohtml": helper.MarkdownToHTML,
+		"staticpath": func(path string) string {
+			return fmt.Sprintf("%s/%s", cfg.URL, strings.Trim(path, "/"))
+		},
+	}
 }

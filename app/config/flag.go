@@ -24,6 +24,8 @@ func init() {
 
 	// 初始化 app 根目录
 	root()
+
+	initCfg()
 }
 
 func flags() {

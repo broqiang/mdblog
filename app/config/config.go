@@ -16,13 +16,18 @@ const filePath = "config/config.toml"
 
 var (
 	once sync.Once
-	cfg  Config
+
+	// Cfg 配置文件
+	Cfg Config
 )
 
 // Config 配置文件类型
 type Config struct {
 	// 应用的名称
 	Name string `toml:"name"`
+
+	// 应用的域名
+	URL string `toml:"url"`
 
 	// 应用的监听地址，为空就是 0.0.0.0
 	Host string `toml:"host"`
@@ -55,17 +60,15 @@ type Log struct {
 	Access bool
 }
 
-// New 初始化配置文件
-func New() Config {
-	path := configPath()
+// InitCfg 初始化配置文件
+func initCfg() {
 
 	once.Do(func() {
-		if _, err := toml.DecodeFile(path, &cfg); err != nil {
+		path := configPath()
+		if _, err := toml.DecodeFile(path, &Cfg); err != nil {
 			helper.Panicf("cannot parse config file. %v", err)
 		}
 	})
-
-	return cfg
 }
 
 // Addr 获取服务器需要的监听地址

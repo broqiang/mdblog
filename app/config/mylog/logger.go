@@ -1,10 +1,11 @@
-package config
+package mylog
 
 import (
 	"log"
 	"os"
 	"path"
 
+	"github.com/broqiang/mdblog/app/config"
 	"github.com/broqiang/mdblog/app/helper"
 )
 
@@ -19,14 +20,16 @@ const (
 	LogFile string = "file"
 	// LogStdout 写入到标准输出
 	LogStdout string = "stdout"
-
-	// ************************************************
-	// 默认配置，当不能获取到相应的配置时，使用这里定义的默认配置
-	// ************************************************
-
-	// 日志的默认格式，当配置文件没有配置的时候使用这个
-	defaultFormat = "2006-01/02"
 )
+
+var cfg = config.Cfg
+var root = config.Root
+
+// LogInfo 普通日志输出
+var LogInfo = NewLogInfo()
+
+// LogErr 错误日志输出
+var LogErr = NewLogError()
 
 // Logger 日志结构
 type Logger struct {
@@ -102,7 +105,6 @@ func (lw *LogWriter) setWriter() {
 	}
 
 	if cfg.Log.Mode == "file" {
-		log.Println("========== log mode: ", cfg.Log.Mode)
 		lw.File = lw.newFile()
 		return
 	}
@@ -116,12 +118,11 @@ func (lw *LogWriter) setWriter() {
 
 // GetFileFullName 获取日志文件的名称
 func (lw *LogWriter) GetFileFullName() string {
-	return path.Join(Root, cfg.Log.Dir, lw.fileName)
+	return path.Join(root, cfg.Log.Dir, lw.fileName)
 }
 
 func (lw *LogWriter) newFile() *os.File {
-	// logPath := path.Join(Root, lw.subDir, lw.fileName)
-	dir := path.Join(Root, cfg.Log.Dir)
+	dir := path.Join(root, cfg.Log.Dir)
 	fileStat, err := os.Stat(dir)
 
 	if err != nil {

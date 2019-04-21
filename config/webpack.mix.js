@@ -4,6 +4,6 @@ let mix = require('laravel-mix');
 mix.disableNotifications();
 // mix.setPublicPath("resources/assets/");
 
-mix.js("resources/assets/js/app.js", "resources/public/js/");
+mix.js("resources/assets/js/app.js", "resources/static/js/");
 
-mix.sass("resources/assets/sass/app.scss", "resources/public/css/");
+mix.sass("resources/assets/sass/app.scss", "resources/static/css/")

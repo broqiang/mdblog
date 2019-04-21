@@ -8,3 +8,4 @@ yarn-error.log
 .env
 /mix-manifest.json
 /resources/blog-docs
+/logs
