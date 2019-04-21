@@ -8,6 +8,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/broqiang/mdblog/app/helper"
 )
 
 // Root 项目的根目录
@@ -60,5 +62,10 @@ func root() {
 
 		Root = path[:index]
 	}
+
+	root, err := filepath.Abs(Root)
+	helper.PanicErr(err)
+
+	Root = root
 
 }

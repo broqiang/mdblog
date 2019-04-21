@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"time"
 
 	"github.com/broqiang/mdblog/app/helper"
 )
@@ -35,15 +34,29 @@ type Logger struct {
 	*log.Logger
 }
 
+// 有个问题， Info 和 Error 各自的锁是独立的，并发大的时候会产生问题
+// 后面再解决，暂时先这样
+
 // NewLogInfo 初始化普通日志
-func NewLogInfo() Logger {
+func NewLogInfo() *Logger {
 	l := Logger{
 		LogWriter: getSysLog(),
 	}
 
 	l.Logger = log.New(l.LogWriter, "[info] ", log.LstdFlags)
 
-	return l
+	return &l
+}
+
+// NewLogError 初始化错误日志
+func NewLogError() *Logger {
+	l := Logger{
+		LogWriter: getSysLog(),
+	}
+
+	l.Logger = log.New(l.LogWriter, "[error] ", log.LstdFlags|log.Llongfile)
+
+	return &l
 }
 
 var defaultLogWriter *LogWriter
@@ -55,12 +68,6 @@ type LogWriter struct {
 
 	// 系统日志打开的文件
 	*os.File
-
-	// 日志文件的格式
-	format string
-
-	// 当前的子目录，按照 mode 保存的格式
-	subDir string
 }
 
 func getSysLog() *LogWriter {
@@ -71,29 +78,18 @@ func getSysLog() *LogWriter {
 	return defaultLogWriter
 }
 
-// NewSysLog 初始化 LogWriter
-func NewSysLog() *LogWriter {
-	lw := LogWriter{fileName: "sys.log"}
-
-	lw.setDefaultConfig()
+// NewAccessLog 初始化访问日志
+func NewAccessLog() *LogWriter {
+	lw := LogWriter{fileName: "access.log"}
 	lw.setWriter()
-
-	log.Println(lw)
 
 	return &lw
 }
 
-// AccessLogWriter 返回访问日志的 Writer， 暂时是配合 gin 使用
-func AccessLogWriter() *os.File {
-	al := NewAccessLog()
+// NewSysLog 初始化 LogWriter
+func NewSysLog() *LogWriter {
+	lw := LogWriter{fileName: "sys.log"}
 
-	return al.File
-}
-
-// NewAccessLog 初始化访问日志
-func NewAccessLog() *LogWriter {
-	lw := LogWriter{fileName: "access.log"}
-	lw.setDefaultConfig()
 	lw.setWriter()
 
 	return &lw
@@ -106,31 +102,26 @@ func (lw *LogWriter) setWriter() {
 	}
 
 	if cfg.Log.Mode == "file" {
+		log.Println("========== log mode: ", cfg.Log.Mode)
 		lw.File = lw.newFile()
 		return
 	}
 
-	log.Println(cfg)
-}
-
-// GetFileName 获取日志文件的名称
-func (lw *LogWriter) GetFileName() string {
-	return path.Join(Root, cfg.Log.Dir, lw.subDir, lw.fileName)
-}
-
-func (lw *LogWriter) setDefaultConfig() {
-	// 设置日志格式
-	lw.format = defaultFormat
-	if cfg.Log.Format != "" {
-		lw.format = cfg.Log.Format
+	if cfg.Log.Mode == "close" {
+		lw.File = nil
+		return
 	}
 
-	lw.subDir = time.Now().Format(lw.format)
+}
+
+// GetFileFullName 获取日志文件的名称
+func (lw *LogWriter) GetFileFullName() string {
+	return path.Join(Root, cfg.Log.Dir, lw.fileName)
 }
 
 func (lw *LogWriter) newFile() *os.File {
 	// logPath := path.Join(Root, lw.subDir, lw.fileName)
-	dir := path.Join(Root, cfg.Log.Dir, lw.subDir)
+	dir := path.Join(Root, cfg.Log.Dir)
 	fileStat, err := os.Stat(dir)
 
 	if err != nil {

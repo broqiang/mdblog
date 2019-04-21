@@ -1,10 +1,15 @@
 package config
 
 import (
+	"bufio"
+	"fmt"
 	"log"
+	"os"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/broqiang/mdblog/app/helper"
 )
 
 // 用来测试是否正确加载配置文件，因为加载配置文件涉及到了路径，所以需要传入项目根目录的参数，
@@ -26,35 +31,29 @@ func TestLogNewLog(t *testing.T) {
 	cfg = manuallyGenerateConfiguration2()
 
 	// 准备写入日志的类型
-	str := "Hello World" + time.Now().String()
+	str := "Hello World " + time.Now().String()
 
 	// 初始化普通日志，写入
 	Info := NewLogInfo()
 	Info.Println(str)
-	Info.Close()
 
-	// 初始化日志，然后写入一行字符串
-	// l := NewSysLog()
-	// fileName := l.GetFileName()
-	// l.WriteString(str)
-	// l.Close()
+	// 初始化错误日志，写入
+	logErr := NewLogError()
+	logErr.Println(str)
+	logErr.Close()
 
-	// // 读取日志文件的最后一行内容，然后匹配
-	// file, err := os.Open(fileName)
-	// helper.PanicErr(err)
+	// 拿出日志文件的完整路径及名称
+	filePath := Info.GetFileFullName()
 
-	// scanner := bufio.NewScanner(file)
+	// 读取文件
+	file, err := os.Open(filePath)
+	helper.PanicErr(err)
 
-	// var haveStr string
-	// for scanner.Scan() {
-	// 	haveStr = scanner.Text()
-	// }
+	scanner := bufio.NewScanner(file)
 
-	// // 将末尾的换行去掉，因为读取文件的时候是按照换行分割的文件
-	// str = strings.TrimSpace(str)
-	// if haveStr != str {
-	// 	t.Errorf("want %q, have %q", str, haveStr)
-	// }
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 
 }
 
@@ -81,12 +80,12 @@ func manuallyGenerateConfiguration2() Config {
 		Name:  "BroQiang 博客",
 		Host:  "",
 		Port:  8080,
-		Debug: false,
+		Debug: true,
 
 		// 日志
 		Log: Log{
 			Dir:    "logs",
-			Mode:   "file",
+			Mode:   "close",
 			Access: true,
 		},
 	}
