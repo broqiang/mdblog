@@ -10,7 +10,7 @@ url = "http://localhost"
 host = ""
 
 # 应用端口
-port = 8080
+port = 8091
 
 # 是否开启 debug， 生产环境要设置成 false， 是否开启 debug
 # 会影响到 gin 的模式和日志的记录方式
@@ -20,10 +20,10 @@ debug = true
 markdown_dir = "resources/blog-docs"
 
 # icp 备案信息
-icp = "京ICP备17034182号"
+icp = "需要填入你自己的备案号"
 
 # 百度统计的 key ，如果不使用的话，不配置或使用空字符串即可
-tongji = "ceb4dafbd34d908306d9745fc0e0f4e4"
+tongji = ""
 
 # 日志相关的配置
 [log]
