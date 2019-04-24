@@ -4,9 +4,18 @@
 
 源码： [github.com/broqiang/mdblog](https://github.com/broqiang/mdblog)
 
+## 环境
+
+- 开发环境 Ubuntu 18.04
+
+- 服务器环境 CentOS 7.6
+
+其他环境没有测试过，不确定是否兼容（如 Windows、MAC）， 后面的所有步骤都假定是在 Linux（上面两种系统） 下完成。
+
 ## 快速使用
 
-如果不需要自己编译，只是想要查看下效果，可以直接下载[xxx](xxx) 到本地，然后执行：
+如果不需要自己编译，只是想要查看下效果，可以直接下载[mdblog.tar.gz](https://github.com/BroQiang/mdblog/releases/download/v1.0.0/mdblog.tar.gz)
+这个我已经编译好了的版本到本地，然后执行：
 
 ```bash
 tar xzvf mdblog.tar.gz
@@ -66,14 +75,6 @@ cd mdblog
 - [sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css) markdown 文档的样式使用的这个 css
 
 - [highlightjs/highlight.js](https://github.com/highlightjs/highlight.js) markdown 代码块高亮使用的此插件
-
-## 环境
-
-- 开发环境 Ubuntu 18.04
-
-- 服务器环境 CentOS 7.6
-
-其他环境没有测试过，不确定是否兼容（如 Windows、MAC）， 后面的所有步骤都假定是在 Linux（上面两种系统） 下完成。
 
 ## 编译
 
