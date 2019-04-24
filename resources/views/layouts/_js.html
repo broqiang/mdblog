@@ -3,8 +3,12 @@
     <script src="{{ staticpath "/public/js/app.js" }}"></script>
 
 
-    {{/* 百度统计 js */}}
+{{/* 百度统计 js */}}
+{{ if not .cfg.Debug }}
+{{/* 这里其实只需要 !cgf.Debug && cgg.Tongji 即可，
+    模板中的语法写不出来，只好写两个 if 了， 有人会可以告诉我下。 */}}
     {{ if .cfg.Tongji }}
     <script src="https://hm.baidu.com/hm.js?{{ .cfg.Tongji }}"></script>
     {{ end }}
+{{ end }}
 {{ end }}

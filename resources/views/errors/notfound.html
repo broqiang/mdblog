@@ -1,0 +1,35 @@
+{{ define "errors/notfound.html" }}
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+	{{ template "layouts/_head.html" . }}
+</head>
+
+<body class="d-flex flex-column h-100">
+
+	{{ template "layouts/_header.html" . }}
+
+	<main class="flex-shrink-0 my-4">
+		<div class="container text-secondary">
+            <div class="row">
+                <div class="col-md-6 offset-md-3  p-5 mt-5">
+                    <h1><span class="text-danger">404</span> Not found ！</h1>
+                    <p>您请求的地址不存在~</p>
+                    <p class="mt-5">
+                        <a class="mr-3" href="javascript:history.back();">返回上一页</a>
+                        <a class="" href="/">返回首页</a>
+                    </p>
+                </div>
+            </div>
+		</div>
+
+	</main>
+
+	{{ template "layouts/_footer.html" . }}
+	{{ template "layouts/_js.html" . }}
+
+	{{/* 自定义 js 写在这个下面 */}}
+</body>
+
+</html>
+{{ end }}

@@ -17,6 +17,12 @@ func Home(c *gin.Context) {
 	c.HTML(200, "home/index.html", params)
 }
 
+// About 关于控制器
+func About(c *gin.Context) {
+	panic("手动 panic")
+	c.String(200, "About")
+}
+
 // MergeH 合并默认参数
 func mergeH(c *gin.Context, h gin.H) gin.H {
 	if c.Keys == nil {
@@ -24,7 +30,7 @@ func mergeH(c *gin.Context, h gin.H) gin.H {
 	}
 
 	if h == nil || len(h) == 0 {
-		return h
+		return c.Keys
 	}
 
 	mh := make(gin.H)

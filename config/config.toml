@@ -14,7 +14,7 @@ port = 8080
 
 # 是否开启 debug， 生产环境要设置成 false， 是否开启 debug
 # 会影响到 gin 的模式和日志的记录方式
-debug = false
+debug = true
 
 # markdown 文档的保存目录
 markdown_dir = "resources/blog-docs"

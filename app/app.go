@@ -26,7 +26,7 @@ func Init() *gin.Engine {
 	setDefaultConfig()
 
 	// 初始化引擎
-	engine := gin.Default()
+	engine := gin.New()
 
 	// 初始化模板相关的内容
 	loadTemplate(engine)
