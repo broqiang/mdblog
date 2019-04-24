@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/broqiang/mdblog/app"
-	"github.com/broqiang/mdblog/app/config/mylog"
+	"github.com/broqiang/mdblog/app/mylog"
 )
 
 func main() {

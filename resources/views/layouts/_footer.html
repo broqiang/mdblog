@@ -1,0 +1,15 @@
+{{ define "layouts/_footer.html" }}
+    <footer class="footer mt-auto py-3 bg-secondary">
+		<div class="container d-flex flex-row">
+			<div class="text-light flex-grow-1">
+				<span class="mr-1">Power By: </span>
+				<a href="https://broqiang.com" class="text-light">BroQiang</a>
+			</div>
+			<div class="text-light flex-grow-2">
+				{{if .cfg.ICP }}
+				©<span class="small">{{ .cfg.ICP }}</span>
+				{{ end }}
+			</div>
+		</div>
+    </footer>
+{{ end }}

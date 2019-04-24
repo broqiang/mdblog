@@ -15,23 +15,24 @@ func TestNewConfig(t *testing.T) {
 	log.Println("toml: ", Cfg)
 
 	if !reflect.DeepEqual(cfg, Cfg) {
-		t.Errorf("want %v, have %v", cfg, Cfg)
+		t.Errorf("\nwant: \n%v \nhave: \n%v", cfg, Cfg)
 	}
 }
 
 func manuallyGenerateConfiguration() Config {
 	return Config{
 		// 基本信息
-		Name:  "BroQiang 博客",
-		URL:   "http://localhost:8080",
-		Host:  "",
-		Port:  8080,
-		Debug: true,
+		Name:        "BroQiang 博客",
+		URL:         "http://localhost",
+		Host:        "",
+		Port:        8080,
+		Debug:       true,
+		MarkdownDir: "resources/blog-docs",
 
 		// 日志
 		Log: Log{
 			Dir:    "logs",
-			Mode:   "close",
+			Mode:   "file",
 			Access: true,
 		},
 	}

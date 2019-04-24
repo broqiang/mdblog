@@ -1,0 +1,16 @@
+
+{{ define "home/_right.html"}}
+					<div class="card mb-2 border-white bg-secondary">
+						<div class="card-body">
+							<div class="card-title text-center text-light">
+								<h3>标签</h3>
+							</div>
+							<hr>
+							{{ range $k, $v := .tags }}
+								<button type="button" class="btn btn-light btn-sm my-1">
+  									{{ $v.Title }} <span class="badge badge-secondary">{{ $v.Number }}</span>
+								</button>
+							{{ end }}
+						</div>
+                    </div>
+{{ end }}

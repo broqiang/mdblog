@@ -8,7 +8,7 @@ import (
 
 	"github.com/broqiang/go-blog/app/helper"
 	"github.com/broqiang/mdblog/app/config"
-	"github.com/broqiang/mdblog/app/config/mylog"
+	"github.com/broqiang/mdblog/app/mylog"
 	"github.com/broqiang/mdblog/app/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -75,7 +75,7 @@ func funcMap() map[string]interface{} {
 		// markdown 转 html
 		"markdowntohtml": helper.MarkdownToHTML,
 		"staticpath": func(path string) string {
-			return fmt.Sprintf("%s/%s", cfg.URL, strings.Trim(path, "/"))
+			return fmt.Sprintf("%s:%d/%s", cfg.URL, cfg.Port, strings.Trim(path, "/"))
 		},
 	}
 }

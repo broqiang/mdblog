@@ -42,6 +42,15 @@ type Config struct {
 
 	// 日志相关的配置
 	Log Log `toml:"log"`
+
+	// markdown 的默认目录
+	MarkdownDir string `toml:"markdown_dir"`
+
+	// icp 备案信息
+	ICP string `toml:"icp"`
+
+	// 百度统计 的 key
+	Tongji string
 }
 
 // Log 是日志相关的配置

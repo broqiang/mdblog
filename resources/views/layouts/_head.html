@@ -1,0 +1,14 @@
+{{ define "layouts/_head.html" }}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="Keywords" content="BroQiang,Linux,Go,PHP,{{ .keywords }}" />
+    <meta name="description" content="Bro Qiang 博客，{{ .description }}" />
+
+    <title>{{ .title }}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ staticpath "public/css/app.css" }}">
+{{ end }}

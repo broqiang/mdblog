@@ -1,0 +1,51 @@
+# 分类配置文件
+# 这个配置文件的名称是为了配置头部的链接
+# 本地路径就以 markdown 文档根目录下的目录名，
+# 如 $path/blog-docs/linux ， 此时 path 就应该是 linux （注意区分大小写）
+# 外部资源就用完整 URL （包含 http 或 https）
+
+[[category]]
+    title = "首页"
+    path = "/"
+    description = "博客列表"
+    out_link = true
+
+[[category]]
+    title = "Linux"
+    path = "linux"
+    description = "和 Linux 相关的文章"
+
+[[category]]
+    title = "Go"
+    path = "go"
+    description = "Go 相关"
+
+[[category]]
+    title = "PHP"
+    path = "php"
+    description = "和 PHP 相关的文章"
+
+
+[[category]]
+    title = "算法"
+    path = "algorithm"
+    description = "和算法相关的文章"
+
+[[category]]
+    title = "开发工具"
+    path = "devtools"
+    description = "开发工具"
+
+[[category]]
+    title = "Github"
+    path = "https://github.com/broqiang/mdblog"
+    description = "项目的 Github 主页"
+    # 外链，不去解析 markdwon
+    out_link = true
+
+[[category]]
+    title = "About"
+    path = "/about"
+    description = "关于本博客"
+    # 外链，不去解析 markdwon
+    out_link = true

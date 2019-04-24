@@ -1,0 +1,10 @@
+{{ define "layouts/_js.html" }}
+
+    <script src="{{ staticpath "/public/js/app.js" }}"></script>
+
+
+    {{/* 百度统计 js */}}
+    {{ if .cfg.Tongji }}
+    <script src="https://hm.baidu.com/hm.js?{{ .cfg.Tongji }}"></script>
+    {{ end }}
+{{ end }}
