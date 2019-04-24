@@ -48,3 +48,15 @@ body {
     width: 1.1rem;
 		height: 1.1rem;
 }
+
+// 返回顶部按钮
+.page-top {
+    position: fixed;
+    right: 2rem;
+    bottom: 3.2rem;
+}
+
+.page-top a .icon-top{
+		font-size: 1.4rem !important;
+    color: $secondary;
+}

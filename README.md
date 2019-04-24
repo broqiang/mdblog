@@ -76,6 +76,8 @@ cd mdblog
 
 - [highlightjs/highlight.js](https://github.com/highlightjs/highlight.js) markdown 代码块高亮使用的此插件
 
+- [阿里矢量图标库](https://www.iconfont.cn) 这个不错，按照需求定制，暂时我只用了 3 个图标
+
 ## 编译
 
 编译需要编译两部分的内容，前端（webpack）和 Go 。
