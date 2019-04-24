@@ -9,5 +9,5 @@ func main() {
 	mylog.LogInfo.Println("Hello")
 	engine := app.Init()
 
-	engine.Run(":8080")
+	app.Run(engine)
 }

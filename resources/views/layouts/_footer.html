@@ -1,13 +1,13 @@
 {{ define "layouts/_footer.html" }}
-    <footer class="footer mt-auto py-3 bg-secondary">
+    <footer class="footer mt-auto py-3 bg-light shadow">
 		<div class="container d-flex flex-row">
-			<div class="text-light flex-grow-1">
-				<span class="mr-1">Power By: </span>
-				<a href="https://broqiang.com" class="text-light">BroQiang</a>
+			<div class="flex-grow-1">
+				<span class="mr-1 text-secondary">&copy; Power By: </span>
+				<a href="https://github.com/broqiang/mdblog" target="_blank" title="点击查看源码">BroQiang</a>
 			</div>
-			<div class="text-light flex-grow-2">
+			<div class="text-secondary flex-grow-2">
 				{{if .cfg.ICP }}
-				©<span class="small">{{ .cfg.ICP }}</span>
+				&copy; <span class="small">{{ .cfg.ICP }}</span>
 				{{ end }}
 			</div>
 		</div>

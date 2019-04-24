@@ -15,7 +15,7 @@ func Recovery(c *gin.Context) {
 			httprequest, _ := httputil.DumpRequest(c.Request, false)
 			mylog.LogErr.Printf("\n[Recovery] %s panic recovered: \n%s", string(httprequest), err)
 
-			c.Redirect(307, "errors")
+			c.Redirect(307, "/errors")
 			return
 		}
 	}()

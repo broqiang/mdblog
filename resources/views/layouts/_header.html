@@ -11,7 +11,7 @@
 				<div class="collapse navbar-collapse" id="navbars">
 					<ul class="navbar-nav mr-auto">
 						{{ range $i, $category := .categories }}
-						<li class="nav-item {{ if $category.Active }}active{{ end }}">
+						<li class="nav-item mr-3 {{ if $category.Active }}active{{ end }}">
 							<a class="nav-link" href="{{ $category.Path }}" title="{{ $category.Description }}">{{ $category.Title }}</a>
 						</li>
 						{{ end }}

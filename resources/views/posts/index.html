@@ -1,4 +1,4 @@
-{{ define "home/index.html" }}
+{{ define "posts/index.html" }}
 <!doctype html>
 <html lang="en" class="h-100">
 <head>
@@ -15,14 +15,14 @@
 				<div class="col-md-9">
 					<div class="container p-3">
 						{{ if .posts }}
-						<ul class="list-unstyled">
+						<ul class="list-unstyled article-list">
 							{{ range $index, $post := .posts }}
 							<li class="media mb-3">
 								<div class="media-body">
-									<h2 class="mt-0 mb-1"><a href="{{ $post.Path }}">{{ $post.Title }} </a></h2>
+									<h2 class="mb-1"><a class="text-dark" href="/posts/{{ $post.Path }}">{{ $post.Title }} </a></h2>
 									<p>
-										<a href="{{ $post.HomePage }}">{{ $post.Author }}</a>
-										<small>update: {{ $post.UpdatedAt.Format "2006-01-02" }}</small>
+										<a class="text-secondary" href="{{ $post.HomePage }}">{{ $post.Author }}</a>
+										 &rarr; <small>update: {{ $post.UpdatedAt.Format "2006-01-02" }}</small>
 									</p>
 									<p>
 										{{ $post.Description }}
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<div class="col-md-3">
-					{{ template "home/_right.html" . }}
+					{{ template "posts/_right.html" . }}
 				</div>
 			</div>
 		</div>

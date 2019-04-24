@@ -1,0 +1,28 @@
+
+{{ define "posts/_right.html"}}
+					<div class="card mb-2 boder-white bg-light">
+						<div class="card-body shadow">
+							<div class="card-title text-center">
+								公告
+							</div>
+							<hr>
+							本博客已经由 go 重写，点击 <a href="/about">about</a> 了解更多，
+							点击 <a href="https://php-blog.broqiang.com" target="_blank">Laravel 版本博客</a>
+							可以查看旧版博客，如果你喜欢本博客，欢迎 <a href="https://github.com/broqiang.com/mdblog">Star</a>
+							， 感谢！
+						</div>
+					</div>
+					<div class="card mb-2 border-white bg-light">
+						<div class="card-body shadow">
+							<div class="card-title text-center">
+								标签
+							</div>
+							<hr>
+							{{ range $k, $v := .tags }}
+								<button type="button" class="btn btn-light btn-sm my-1">
+  									{{ $v.Title }} <span class="badge badge-secondary">{{ $v.Number }}</span>
+								</button>
+							{{ end }}
+						</div>
+                    </div>
+{{ end }}

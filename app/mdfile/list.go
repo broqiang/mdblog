@@ -21,6 +21,7 @@ type List interface {
 	CategoriesAll() Categories
 	TagsAll() Tags
 	ArticlesAll() Articles
+	ArticleByPath(string) (Article, error)
 }
 
 // Categories 是文章分类的切片（数组）

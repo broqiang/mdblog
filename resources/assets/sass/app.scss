@@ -6,14 +6,16 @@
 
 @import 'ali-icons/iconfont';
 
+@import '~github-markdown-css';
+
+@import '~highlight.js/styles/github-gist.css';
+
 // 下面所有用到的变量有自定义和 bootstrap 自带的，尽量使用 bootstrap 的变量，可以样式统一
 
 // Global
 
 body {
-    // background-color: #eff6fa;
     background-color: #F5F7F9;
-    //  background-color: $white;
 }
 
 
@@ -22,6 +24,27 @@ body {
   padding-left: 15px;
 }
 
-code {
-  font-size: 80%;
+.markdown-body {
+	box-sizing: border-box;
+	min-width: 200px;
+	max-width: 980px;
+	margin: 0 auto;
+	padding: 25px;
+	color: $dark;
+}
+
+@media (max-width: 767px) {
+	.markdown-body {
+		padding: 5px;
+	}
+}
+
+// markdown 标题锚点按钮
+.markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 .octicon-link, .markdown-body h6 .octicon-link {
+    display: inline-block;
+    color: $dark;
+    vertical-align: middle;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMWVtIiBoZWlnaHQ9IjFlbSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgbWVldCIgdmlld0JveD0iMCAwIDE2IDE2IiBzdHlsZT0iLW1zLXRyYW5zZm9ybTogcm90YXRlKDM2MGRlZyk7IC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTsgdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTsiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTQgOWgxdjFINGMtMS41IDAtMy0xLjY5LTMtMy41UzIuNTUgMyA0IDNoNGMxLjQ1IDAgMyAxLjY5IDMgMy41IDAgMS40MS0uOTEgMi43Mi0yIDMuMjVWOC41OWMuNTgtLjQ1IDEtMS4yNyAxLTIuMDlDMTAgNS4yMiA4Ljk4IDQgOCA0SDRjLS45OCAwLTIgMS4yMi0yIDIuNVMzIDkgNCA5em05LTNoLTF2MWgxYzEgMCAyIDEuMjIgMiAyLjVTMTMuOTggMTIgMTMgMTJIOWMtLjk4IDAtMi0xLjIyLTItMi41IDAtLjgzLjQyLTEuNjQgMS0yLjA5VjYuMjVjLTEuMDkuNTMtMiAxLjg0LTIgMy4yNUM2IDExLjMxIDcuNTUgMTMgOSAxM2g0YzEuNDUgMCAzLTEuNjkgMy0zLjVTMTQuNSA2IDEzIDZ6IiBmaWxsPSJjdXJyZW50Q29sb3IiLz48L3N2Zz4=') no-repeat center center / contain;
+    width: 1.1rem;
+		height: 1.1rem;
 }

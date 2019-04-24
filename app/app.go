@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/broqiang/go-blog/app/helper"
 	"github.com/broqiang/mdblog/app/config"
+	"github.com/broqiang/mdblog/app/helper"
 	"github.com/broqiang/mdblog/app/mylog"
 	"github.com/broqiang/mdblog/app/routes"
 	"github.com/gin-gonic/gin"
@@ -78,4 +78,9 @@ func funcMap() map[string]interface{} {
 			return fmt.Sprintf("%s:%d/%s", cfg.URL, cfg.Port, strings.Trim(path, "/"))
 		},
 	}
+}
+
+// Run 启动服务
+func Run(e *gin.Engine) {
+	e.Run(config.Cfg.Addr())
 }

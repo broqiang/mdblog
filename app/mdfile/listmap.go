@@ -1,6 +1,7 @@
 package mdfile
 
 import (
+	"errors"
 	"sort"
 	"strings"
 )
@@ -26,6 +27,19 @@ func (list *ListMap) TagsAll() Tags {
 // ArticlesAll 获取所有文章的列表
 func (list *ListMap) ArticlesAll() Articles {
 	return list.Articles
+}
+
+// ArticleByPath 根据文章的 Path 查询指定的文章
+func (list *ListMap) ArticleByPath(path string) (Article, error) {
+	if path != "" {
+		for _, article := range list.Articles {
+			if article.Path == strings.Trim(path, "/") {
+				return article, nil
+			}
+		}
+	}
+
+	return Article{}, errors.New("can not found article")
 }
 
 func newListMap() *ListMap {

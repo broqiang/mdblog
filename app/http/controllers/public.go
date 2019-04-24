@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strings"
+
 	"github.com/broqiang/mdblog/app/mdfile"
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +16,7 @@ func Home(c *gin.Context) {
 		"posts":    mdfile.Model.ArticlesAll(),
 	})
 
-	c.HTML(200, "home/index.html", params)
+	c.HTML(200, "posts/index.html", params)
 }
 
 // About 关于控制器
@@ -44,4 +46,9 @@ func mergeH(c *gin.Context, h gin.H) gin.H {
 	}
 
 	return mh
+}
+
+// ToKeywords 用都好分割，拼接关键词
+func ToKeywords(works ...string) string {
+	return strings.Join(works, ",")
 }

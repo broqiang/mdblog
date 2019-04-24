@@ -22,5 +22,7 @@ func New(e *gin.Engine) {
 	{
 		front.GET("/", controllers.Home)
 		front.GET("/about", controllers.About)
+
+		front.GET("/posts/:path", controllers.PostByPath)
 	}
 }

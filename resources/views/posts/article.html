@@ -1,0 +1,57 @@
+{{ define "posts/article.html" }}
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    {{ template "layouts/_head.html" . }}
+</head>
+
+<body class="d-flex flex-column h-100">
+
+    {{ template "layouts/_header.html" . }}
+
+    <main class="flex-shrink-0 my-4">
+        <div class="container text-dark">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="container p-4 bg-white shadow">
+                        <h1>{{ .post.Title }}</h1>
+
+                        <p>
+                            <small>作者：</small>
+                            <a class="mr-auto btn btn-white" href="{{ .post.HomePage }}" target="_blank">{{ .post.Author }}</a>
+                            <a class="btn btn-white pull-right">aaa</a>
+                        </p>
+
+
+                        <p>
+                            <small title="{{ .post.CreatedAt.Format "2006-01-02 15:04:03" }}">发布于
+                                {{ .post.CreatedAt.Format "2006-01-02" }}</small>
+                            |
+                            <small title="{{ .post.UpdatedAt.Format "2006-01-02 15:04:03" }}">最后更新
+                                {{ .post.UpdatedAt.Format "2006-01-02" }}</small>
+                        </p>
+                        <hr>
+
+                        <article class="markdown-body">
+                            {{ .post.Body | markdowntohtml }}
+                        </article>
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    {{ template "posts/_right.html" . }}
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    {{ template "layouts/_footer.html" . }}
+    {{ template "layouts/_js.html" . }}
+
+    {{/* 自定义 js 写在这个下面 */}}
+</body>
+
+</html>
+{{ end }}
