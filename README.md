@@ -1,6 +1,6 @@
 # Bro Qiang 博客
 
-示例： [broqiang.com](https://broqiang.com) （正在使用）
+示例： [broqiang.com](https://broqiang.com) （正在迁移中，稍等再查看示例）
 
 源码： [github.com/broqiang/mdblog](https://github.com/broqiang/mdblog)
 
