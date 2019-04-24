@@ -18,19 +18,29 @@
                         <h1>{{ .post.Title }}</h1>
 
                         <p>
-                            <small>作者：</small>
-                            <a class="mr-auto btn btn-white" href="{{ .post.HomePage }}" target="_blank">{{ .post.Author }}</a>
-                            <a class="btn btn-white pull-right">aaa</a>
+                            <div>
+                                <small>作者：</small>
+                                <a class="btn btn-white" href="{{ .post.HomePage }}"
+                                    target="_blank">{{ .post.Author }}</a>
+                            </div>
                         </p>
 
 
-                        <p>
-                            <small title="{{ .post.CreatedAt.Format "2006-01-02 15:04:03" }}">发布于
-                                {{ .post.CreatedAt.Format "2006-01-02" }}</small>
-                            |
-                            <small title="{{ .post.UpdatedAt.Format "2006-01-02 15:04:03" }}">最后更新
-                                {{ .post.UpdatedAt.Format "2006-01-02" }}</small>
-                        </p>
+                        <div class="d-flex">
+                            <p>
+                                <small title="{{ .post.CreatedAt.Format "2006-01-02 15:04:03" }}">发布于
+                                    {{ .post.CreatedAt.Format "2006-01-02" }}</small>
+                                |
+                                <small title="{{ .post.UpdatedAt.Format "2006-01-02 15:04:03" }}">最后更新
+                                    {{ .post.UpdatedAt.Format "2006-01-02" }}</small>
+                            </p>
+                            <div class="ml-auto">
+                                <a href="https://github.com/BroQiang/blog-docs/blob/master/{{ $.post.Category | tolower }}/{{ $.post.Path }}.md"
+                                    class="btn btn-sm btn-light" title="如果你发现本文有错误的地方，欢迎到 Github 上改正" target="_blank">
+                                    <spa class="iconfont icon-github"></span> 修改原文
+                                </a>
+                            </div>
+                        </div>
                         <hr>
 
                         <article class="markdown-body">

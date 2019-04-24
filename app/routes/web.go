@@ -23,6 +23,13 @@ func New(e *gin.Engine) {
 		front.GET("/", controllers.Home)
 		front.GET("/about", controllers.About)
 
+		// 博客文章详情
 		front.GET("/posts/:path", controllers.PostByPath)
+
+		// 根据分类显示文章
+		front.GET("/c/:name", controllers.PostsByCategory)
+
+		// 根据标签显示文章
+		front.GET("/tag/:name", controllers.PostsByTag)
 	}
 }

@@ -3,6 +3,7 @@ package midderware
 import (
 	"path"
 	"sort"
+	"strings"
 
 	"github.com/broqiang/mdblog/app/config"
 
@@ -21,12 +22,12 @@ func Sites(c *gin.Context) {
 func Navigation(c *gin.Context) {
 	categories := mdfile.Model.CategoriesAll()
 	cates := make(mdfile.Categories, 0)
-	pathValue := c.Param("cname")
+	pathValue := c.Param("name")
 
 	for _, category := range categories {
 		if category.OutLink || category.Number > 0 {
 			// 如果当前参数路径和分类路径相同，就是激活状态
-			if pathValue == category.Path ||
+			if strings.ToLower(pathValue) == strings.ToLower(category.Path) ||
 				c.Request.URL.Path == category.Path {
 				category.Active = true
 			}
@@ -48,9 +49,18 @@ func Navigation(c *gin.Context) {
 func Tags(c *gin.Context) {
 
 	tags := mdfile.Model.TagsAll()
+	name := c.Param("name")
 
 	// 按照标签数量排序
 	sort.Sort(&tags)
+
+	for i := 0; i < len(tags); i++ {
+		if strings.ToLower(name) == tags[i].Title {
+			tags[i].Active = true
+		} else {
+			tags[i].Active = false
+		}
+	}
 
 	c.Set("tags", tags)
 	c.Next()

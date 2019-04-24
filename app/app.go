@@ -77,6 +77,9 @@ func funcMap() map[string]interface{} {
 		"staticpath": func(path string) string {
 			return fmt.Sprintf("%s:%d/%s", cfg.URL, cfg.Port, strings.Trim(path, "/"))
 		},
+		"tolower": func(str string) string {
+			return strings.ToLower(str)
+		},
 	}
 }
 

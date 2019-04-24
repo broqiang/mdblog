@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"io/ioutil"
+	"path/filepath"
 	"strings"
 
+	"github.com/broqiang/mdblog/app/config"
 	"github.com/broqiang/mdblog/app/mdfile"
 	"github.com/gin-gonic/gin"
 )
@@ -21,8 +24,20 @@ func Home(c *gin.Context) {
 
 // About 关于控制器
 func About(c *gin.Context) {
-	panic("手动 panic")
-	c.String(200, "About")
+	// about 页面就直接展示的项目根目录下的 README.md
+	path := filepath.Join(config.Root, "README.md")
+	about, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		c.Redirect(307, "/errors")
+		return
+	}
+
+	params := mergeH(c, gin.H{
+		"about": string(about),
+	})
+
+	c.HTML(200, "layouts/about.html", params)
 }
 
 // MergeH 合并默认参数

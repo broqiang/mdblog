@@ -11,9 +11,9 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7185d9e488144a3a2b5c6240a45e0192be03600094ea051da77e6a0500243f24"
+  digest = "1:9a9d9b4d7ec58633859ec57581d6a56e5ce0b16996bb127d712f6819bacce3a4"
   name = "github.com/broqiang/go-blog"
-  packages = ["app/helper"]
+  packages = ["app/config"]
   pruneopts = "UT"
   revision = "7a0e7b6f8f33b8c98b70c4cb0e7a8dc6c7e13a5a"
 
@@ -121,7 +121,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/BurntSushi/toml",
-    "github.com/broqiang/go-blog/app/helper",
+    "github.com/broqiang/go-blog/app/config",
     "github.com/gin-gonic/gin",
     "github.com/microcosm-cc/bluemonday",
     "golang.org/x/net/html",

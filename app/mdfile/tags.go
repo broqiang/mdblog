@@ -10,6 +10,9 @@ type Tag struct {
 
 	// 标签下文章的数量
 	Number int
+
+	// 是否是选中的
+	Active bool
 }
 
 // Len 实现 Sort 的接口

@@ -19,9 +19,10 @@
 							</div>
 							<hr>
 							{{ range $k, $v := .tags }}
-								<button type="button" class="btn btn-light btn-sm my-1">
-  									{{ $v.Title }} <span class="badge badge-secondary">{{ $v.Number }}</span>
-								</button>
+								<a class="btn btn-light btn-sm my-1 mr-1 shadow rounded" href="/tag/{{ $v.Title }}">
+									<span class="{{ if $v.Active }}text-info{{ else }}text-secondary{{ end }}">{{ $v.Title }}</span>
+									<span class="badge badge-secondary">{{ $v.Number }}</span>
+								</a>
 							{{ end }}
 						</div>
                     </div>

@@ -1,0 +1,27 @@
+{{ define "layouts/about.html" }}
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+	{{ template "layouts/_head.html" . }}
+</head>
+
+<body class="d-flex flex-column h-100">
+
+	{{ template "layouts/_header.html" . }}
+
+	<main class="flex-shrink-0 my-4">
+		<div class="container py-5 bg-white">
+            <article class="markdown-body text-secondary">
+                {{ .about | markdowntohtml }}
+            </article>
+		</div>
+	</main>
+
+	{{ template "layouts/_footer.html" . }}
+	{{ template "layouts/_js.html" . }}
+
+	{{/* 自定义 js 写在这个下面 */}}
+</body>
+
+</html>
+{{ end }}

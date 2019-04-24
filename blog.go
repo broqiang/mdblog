@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/broqiang/mdblog/app"
-	"github.com/broqiang/mdblog/app/mylog"
 )
 
 func main() {
-	mylog.LogInfo.Println("Hello")
+
+	// 初始化 gin 引擎
 	engine := app.Init()
 
+	// 启动服务
 	app.Run(engine)
 }

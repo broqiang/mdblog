@@ -37,13 +37,6 @@
     description = "开发工具"
 
 [[category]]
-    title = "Github"
-    path = "https://github.com/broqiang/mdblog"
-    description = "项目的 Github 主页"
-    # 外链，不去解析 markdwon
-    out_link = true
-
-[[category]]
     title = "About"
     path = "/about"
     description = "关于本博客"

@@ -42,6 +42,34 @@ func (list *ListMap) ArticleByPath(path string) (Article, error) {
 	return Article{}, errors.New("can not found article")
 }
 
+// ArticlesByCategory 根据分类获取博客列表
+func (list *ListMap) ArticlesByCategory(name string) Articles {
+	articles := make(Articles, 0)
+	for _, article := range list.Articles {
+		if strings.ToLower(article.Category) == strings.ToLower(strings.Trim(name, "/")) {
+			articles = append(articles, article)
+		}
+	}
+
+	return articles
+}
+
+// ArticlesByTag 根据标签获取博客列表
+func (list *ListMap) ArticlesByTag(title string) Articles {
+	articles := make(Articles, 0)
+	title = strings.Trim(title, "/")
+
+	for _, article := range list.Articles {
+		for _, tag := range article.Tags {
+			if strings.ToLower(tag) == strings.ToLower(title) {
+				articles = append(articles, article)
+			}
+		}
+	}
+
+	return articles
+}
+
 func newListMap() *ListMap {
 
 	list := ListMap{
