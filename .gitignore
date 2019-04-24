@@ -9,4 +9,4 @@ yarn-error.log
 /mix-manifest.json
 /resources/blog-docs
 /logs
-/confog/config.toml
+/config/config.toml
