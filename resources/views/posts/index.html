@@ -19,7 +19,7 @@
 							{{ range $index, $post := .posts }}
 							<li class="media mb-3">
 								<div class="media-body">
-									<h2 class="mb-1"><a class="text-dark" href="/posts/{{ $post.Path }}">{{ $post.Title }} </a></h2>
+									<h1 class="mb-1"><a class="text-dark" href="/posts/{{ $post.Path }}">{{ $post.Title }} </a></h1>
 									<p>
 										<a class="text-secondary" href="{{ $post.HomePage }}">{{ $post.Author }}</a>
 										 &rarr; <small>update: {{ $post.UpdatedAt.Format "2006-01-02" }}</small>

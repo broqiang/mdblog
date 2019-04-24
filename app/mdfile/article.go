@@ -94,7 +94,7 @@ func getAritclesSpecifiedCategory(category *Category) Articles {
 		}
 
 		// 将分类添加到文章中
-		article.Category = category.Title
+		article.Category = category.Path
 		article.Path = strings.TrimSuffix(info.Name(), ext)
 
 		articles = append(articles, article)

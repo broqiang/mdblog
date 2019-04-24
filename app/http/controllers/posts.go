@@ -33,7 +33,7 @@ func PostsByCategory(c *gin.Context) {
 
 	if len(articles) > 0 {
 		params := mergeH(c, gin.H{
-			"title":    "分类" + name,
+			"title":    "分类 | " + name,
 			"keywords": name,
 			"posts":    articles,
 		})
@@ -51,7 +51,7 @@ func PostsByTag(c *gin.Context) {
 
 	if len(articles) > 0 {
 		params := mergeH(c, gin.H{
-			"title":    "标签-" + name,
+			"title":    "标签 | " + name,
 			"keywords": name,
 			"posts":    articles,
 		})

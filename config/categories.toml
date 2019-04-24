@@ -25,6 +25,10 @@
     path = "php"
     description = "和 PHP 相关的文章"
 
+[[category]]
+    title = "MySQL"
+    path = "mysql"
+    description = "和 MySQL 相关的文章"
 
 [[category]]
     title = "算法"
