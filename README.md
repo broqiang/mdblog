@@ -272,6 +272,18 @@ server {
 }
 ```
 
-## 后记
+## 配置 github 钩子
 
-到这里就基本配置完成了，现在只是初步完成，还有部分功能未完善，根据实际的使用再慢慢完善，欢迎 star 支持下。
+在 `https://github.com/BroQiang/blog-docs` 项目中添加一个 Webhooks， 配置下面内容：
+
+- Payload URL: `https://broqiang.com/webhook`
+
+- Content type: 选择 `application/json`
+
+- Secret: 自定义一个密钥，要和 `config.toml` 中的 secret 的值保持一直
+
+钩子生效后， blog-docs 再 push 的时候 mdblog 就可以自动更新文档并显示了。
+
+## 更新日志
+
+### 2019-04-28 添加 github 钩子，自动同步 blog-docs 的文档

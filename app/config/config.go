@@ -51,6 +51,9 @@ type Config struct {
 
 	// 百度统计 的 key
 	Tongji string
+
+	// Github 钩子中配置的 Secret
+	Secret string
 }
 
 // Log 是日志相关的配置

@@ -10,14 +10,6 @@
   version = "v0.3.1"
 
 [[projects]]
-  branch = "master"
-  digest = "1:9a9d9b4d7ec58633859ec57581d6a56e5ce0b16996bb127d712f6819bacce3a4"
-  name = "github.com/broqiang/go-blog"
-  packages = ["app/config"]
-  pruneopts = "UT"
-  revision = "7a0e7b6f8f33b8c98b70c4cb0e7a8dc6c7e13a5a"
-
-[[projects]]
   digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
@@ -121,7 +113,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/BurntSushi/toml",
-    "github.com/broqiang/go-blog/app/config",
     "github.com/gin-gonic/gin",
     "github.com/microcosm-cc/bluemonday",
     "golang.org/x/net/html",

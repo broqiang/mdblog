@@ -1,9 +1,15 @@
 package controllers
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
 	"io/ioutil"
+	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/broqiang/mdblog/app/mylog"
 
 	"github.com/broqiang/mdblog/app/config"
 	"github.com/broqiang/mdblog/app/mdfile"
@@ -66,4 +72,70 @@ func mergeH(c *gin.Context, h gin.H) gin.H {
 // ToKeywords 用都好分割，拼接关键词
 func ToKeywords(works ...string) string {
 	return strings.Join(works, ",")
+}
+
+// Webhook github 钩子
+func Webhook(c *gin.Context) {
+	singn := c.GetHeader("X-Hub-Signature")
+	body, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		mylog.LogErr.Printf("github hook %v", err)
+		return
+	}
+
+	if !checkSecret(singn, body) {
+		mylog.Error("github hook check secret failure.")
+		return
+	}
+
+	pullDocs()
+
+	// 从新初始化博客列表的内容
+	mdfile.Model.Reload()
+}
+
+// 向 github 发起 pull 请求，更新文档
+func pullDocs() {
+	// 获取文档保存的路径
+	docPath := filepath.Join(config.Root, config.Cfg.MarkdownDir)
+	// 执行 git pull
+	cmd := exec.Command("git", "pull")
+	// 切换到命令要执行的目录
+	cmd.Dir = docPath
+
+	// 执行，并返回结果
+	res, err := cmd.Output()
+
+	if err == nil {
+		mylog.Infof("git pull success. \n%s", res)
+	} else {
+		mylog.Errorf("git pull failure, %v", err)
+	}
+
+}
+
+// 检测 github 传过来的 key
+func checkSecret(singn string, body []byte) bool {
+	if len(singn) != 45 || !strings.HasPrefix(singn, "sha1=") {
+		return false
+	}
+
+	// github 中对应的加密串， 从配置文件去获取
+	secret := []byte(config.Cfg.Secret)
+
+	// 通过加密串和 body 计算签名
+	mac := hmac.New(sha1.New, secret)
+	mac.Write(body)
+	mKey := mac.Sum(nil)
+
+	// Hex 解码
+	singnature := make([]byte, 20)
+	hex.Decode(singnature, []byte(singn[5:]))
+
+	// 比较签名是否一直
+	if hmac.Equal(singnature, mKey) {
+		return true
+	}
+
+	return false
 }

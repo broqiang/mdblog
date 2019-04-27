@@ -9,18 +9,23 @@ import (
 // New 初始化路由
 func New(e *gin.Engine) {
 	// 注册全局的中间件
-	e.Use(gin.Logger(), midderware.Recovery, midderware.Sites, midderware.Navigation)
+	e.Use(gin.Logger(), midderware.Recovery)
 
-	// 出现错误的页面
-	e.GET("/errors", midderware.Errors)
-
-	// 404 页面
-	e.NoRoute(midderware.NotFound)
+	e.POST("/webhook", controllers.Webhook)
 
 	// 前台页面组，添加右侧标签的中间件
-	front := e.Group("/", midderware.Tags)
+	front := e.Group("/", midderware.Sites, midderware.Navigation, midderware.Tags)
 	{
+		// 出现错误的页面
+		e.GET("/errors", midderware.Errors)
+
+		// 404 页面
+		e.NoRoute(midderware.NotFound)
+
+		// 首页
 		front.GET("/", controllers.Home)
+		// about 页
+
 		front.GET("/about", controllers.About)
 
 		// 博客文章详情

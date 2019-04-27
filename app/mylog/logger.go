@@ -1,6 +1,7 @@
 package mylog
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -152,4 +153,24 @@ func (lw *LogWriter) newFile() *os.File {
 	helper.PanicErr(err)
 
 	return file
+}
+
+// Info 打印 info 信息
+func Info(vals ...interface{}) {
+	LogInfo.Output(2, fmt.Sprintln(vals...))
+}
+
+// Infof 指定格式的 info 日志
+func Infof(format string, vals ...interface{}) {
+	LogInfo.Output(2, fmt.Sprintf(format, vals...))
+}
+
+// Error 错误日志
+func Error(vals ...interface{}) {
+	LogErr.Output(2, fmt.Sprintln(vals...))
+}
+
+// Errorf 指定格式的错误日志
+func Errorf(format string, vals ...interface{}) {
+	LogErr.Output(2, fmt.Sprintf(format, vals...))
 }

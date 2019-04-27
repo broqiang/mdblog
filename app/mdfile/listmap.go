@@ -13,6 +13,11 @@ type ListMap struct {
 	Tags       Tags
 }
 
+// Reload 重新加载文档
+func (list *ListMap) Reload() {
+	Model = new()
+}
+
 // CategoriesAll 获取所有的分类列表
 func (list *ListMap) CategoriesAll() Categories {
 
