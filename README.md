@@ -14,7 +14,7 @@
 
 ## 快速使用
 
-如果不需要自己编译，只是想要查看下效果，可以直接下载[mdblog.tar.gz](https://github.com/BroQiang/mdblog/releases/download/v1.0.0/mdblog.tar.gz)
+如果不需要自己编译，只是想要查看下效果，可以直接下载[mdblog.tar.gz](https://github.com/BroQiang/mdblog/releases/download/v1.1.0/mdblog.tar.gz)
 这个我已经编译好了的版本到本地，然后执行：
 
 ```bash
