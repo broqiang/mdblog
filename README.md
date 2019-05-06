@@ -23,6 +23,8 @@ cd mdblog
 ./blog
 ```
 
+在 `./blog` 之前需要先 [配置](https://github.com/BroQiang/mdblog#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6) 一下配置文件
+
 然后浏览器访问 [http://localhost:8091](http://localhost:8091)
 
 即可查看效果，只需要在 `resource/blog-docs` 目录中放入 markdown 文件即可使用。
