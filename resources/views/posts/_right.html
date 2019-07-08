@@ -1,31 +1,46 @@
-
 {{ define "posts/_right.html"}}
-					<div class="card mb-2 boder-white bg-light text-secondary">
-						<div class="card-body shadow">
-							<div class="card-title text-center">
-								公告
-							</div>
-							<hr>
-							<small>
-								本博客已经由 go 重写，点击 <a href="/about">about</a> 了解更多，
-								点击 <a href="https://php-blog.broqiang.com" target="_blank">Laravel 版本博客</a>
-								可以查看旧版博客，如果你喜欢本博客，欢迎 <a href="https://github.com/broqiang/mdblog" target="_blank">Star</a>
-								， 感谢！
-							</small>
-						</div>
-					</div>
-					<div class="card mb-2 border-white bg-light text-secondary">
-						<div class="card-body shadow">
-							<div class="card-title text-center">
-								标签
-							</div>
-							<hr>
-							{{ range $k, $v := .tags }}
-								<a class="btn btn-light btn-sm my-1 mr-1 shadow rounded" href="/tag/{{ $v.Title }}">
-									<span class="text-secondary {{ if $v.Active }}font-weight-bold{{ end }}">{{ $v.Title }}</span>
-									<span class="badge badge-secondary">{{ $v.Number }}</span>
-								</a>
-							{{ end }}
-						</div>
-                    </div>
-{{ end }}
+<div class="card mb-2 boder-white bg-light text-secondary">
+	<div class="card-body shadow">
+		<div class="card-title text-center">
+			公告
+		</div>
+		<hr>
+		<small>
+			本博客已经由 go 重写，点击 <a href="/about">about</a> 了解更多，
+			点击 <a href="https://php-blog.broqiang.com" target="_blank">Laravel 版本博客</a>
+			可以查看旧版博客，如果你喜欢本博客，欢迎 <a href="https://github.com/broqiang/mdblog" target="_blank">Star</a>
+			， 感谢！
+		</small>
+	</div>
+</div>
+<div class="card mb-2 border-white bg-light text-secondary">
+	<div class="card-body shadow">
+		<div class="card-title text-center">
+			标签
+		</div>
+		<hr>
+		{{ range $k, $v := .tags }}
+		<a class="btn btn-light btn-sm my-1 mr-1 shadow rounded" href="/tag/{{ $v.Title }}">
+			<span class="text-secondary {{ if $v.Active }}font-weight-bold{{ end }}">{{ $v.Title }}</span>
+			<span class="badge badge-secondary">{{ $v.Number }}</span>
+		</a>
+		{{ end }}
+	</div>
+</div>
+<div class="card mb-2 border-white bg-light text-secondary">
+	<div class="card-body shadow">
+		<div class="card-title text-center">
+			友情链接
+		</div>
+		<hr>
+		<small>
+			<ul class="list-unstyled">
+				<li class="mb-2"><a href="https://php-blog.broqiang.com">PHP 版本的博客（旧版）</a></li>
+				<li class="mb-2">
+					<a href="https://php-blog.broqiang.com/tutorials/linux-basic-tutorial">
+						Linux基础教程:boder-white</a></li>
+				<li class="mb-2"><a href="http://www.blockchant.cn">另外一个博客</a></li>
+			</ul>
+		</small>
+	</div>
+	{{ end }}
