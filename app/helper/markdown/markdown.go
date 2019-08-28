@@ -10,8 +10,8 @@ import (
 	"unicode"
 
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday"
 	"golang.org/x/net/html"
-	"gopkg.in/russross/blackfriday.v1"
 )
 
 // HTML 将 markdown 文档转换成 html 文件
