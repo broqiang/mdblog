@@ -4,6 +4,10 @@
 
 源码： [github.com/broqiang/mdblog](https://github.com/broqiang/mdblog)
 
+## 提示
+
+此项目已经由 dep 管理更换为 mod 管理， 但是文档没有更新
+
 ## 环境
 
 - 开发环境 Ubuntu 18.04
