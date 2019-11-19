@@ -1,7 +1,7 @@
 # 配置文件
 
 # 应用名称
-name = "BroQiang 博客"
+name = "hao.wu 博客"
 
 # 应用的域名，静态资源等会用到此配置
 url = "http://localhost"
