@@ -6,7 +6,7 @@
 
 ## 提示
 
-此项目已经由 dep 管理更换为 mod 管理， 但是文档没有更新， 有空再更新文档～～～～～
+此项目已经由 dep 管理更换为 mod 管理
 
 ## 环境
 
@@ -58,7 +58,7 @@ cd mdblog
 
 - go 版本是 `go1.12 linux/amd64` ， 其他版本未测试。
 
-- [golang/dep](https://github.com/golang/dep) 用来管理 go 中的依赖
+- ~~[golang/dep](https://github.com/golang/dep) 用来管理 go 中的依赖, 已经废除，采用 Go modules 来管理依赖~~
 
 - [gin-gonic/gin](https://github.com/gin-gonic/gin) 引擎及路由
 
@@ -92,7 +92,7 @@ cd mdblog
 
 编译前要保证已经正确安装了 Go 环境，并配置好环境变量， GOROOT 和 GOPATH
 
-#### 安装 dep
+#### ~~安装 dep（已废弃）~~
 
 这个是一个官方的依赖管理工作，见 [https://github.com/golang/dep](https://github.com/golang/dep) ， 有详细的介绍和安装步骤。
 
@@ -131,8 +131,11 @@ cd $GOPATH/src/github.com/broqiang
 git clone https://github.com/BroQiang/mdblog.git
 
 # 初始化项目（恢复依赖）
-dep ensure
+go mod tidy
 ```
+
+> PS: 如果 go mod 有包因为墙无法更新， 可以配置国内镜像，详细见
+[https://goproxy.cn](https://goproxy.cn)
 
 #### 修改配置文件
 
@@ -292,6 +295,18 @@ server {
 
 ## 更新日志
 
-### 2019-04-28 添加 github 钩子，自动同步 blog-docs 的文档
+### 2019-04-28
 
-### 2019-06-14 因为最近网络波动较大， 为了解决 dep 恢复依赖比较困难， 将 vendor 目录加入到版本控制
+添加 github 钩子，自动同步 blog-docs 的文档
+
+### 2020-02-26
+
+好久没有更新了， 正好 ssl 证书到期了，阿里云又给我发来了网站备案的整改通知,
+github 没有发来了前端 js 的漏洞通知， 就一起解决了，
+顺便将之前的替换 Go modules 部分的文档修改
+
+- footer 中整改备案跳转 www.beian.miit.gov.cn
+
+- 更新前端插件到最新（github 说有漏洞， 也没去仔细查看）
+
+- 更新 readme 文档
