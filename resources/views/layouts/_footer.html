@@ -1,18 +1,19 @@
 {{ define "layouts/_footer.html" }}
-	<div class="page-top" title="返回顶部">
-		<a href="#page-top"><span class="iconfont icon-top"></span></a>
-	</div>
-    <footer class="footer mt-auto py-3 bg-light shadow">
-		<div class="container d-flex flex-row">
-			<div class="flex-grow-1">
-				<span class="mr-1 text-secondary">&copy; Power By: </span>
-				<a href="https://github.com/broqiang/mdblog" target="_blank" title="点击查看源码">BroQiang</a>
-			</div>
-			<div class="text-secondary flex-grow-2">
-				{{if .cfg.ICP }}
-				&copy; <span class="small">{{ .cfg.ICP }}</span>
-				{{ end }}
-			</div>
+<div class="page-top" title="返回顶部">
+	<a href="#page-top"><span class="iconfont icon-top"></span></a>
+</div>
+<footer class="footer mt-auto py-3 bg-light shadow">
+	<div class="container d-flex flex-row">
+		<div class="flex-grow-1">
+			<span class="mr-1 text-secondary">&copy; Power By: </span>
+			<a href="https://github.com/broqiang/mdblog" target="_blank" title="点击查看源码">BroQiang</a>
 		</div>
-    </footer>
+		<div class="text-secondary flex-grow-2">
+			{{if .cfg.ICP }}
+			<a href="http://www.beian.miit.gov.cn" target="_blank">&copy; <span
+				class="small">{{ .cfg.ICP }}</span></a>
+			{{ end }}
+		</div>
+	</div>
+</footer>
 {{ end }}
