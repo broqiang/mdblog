@@ -157,7 +157,7 @@ __go run__ 方式：
 
 ```bash
 # 可以指定目录（要绝对路径），$(pwd) 就是当前所在目录的绝对路径
-go build -root=$(pwd)
+go run -root=$(pwd)
 ```
 
 此时就可以访问了，如配置文件默认的 8091 端口，在浏览器访问 [http://localhost:8091](http://localhost:8091)
