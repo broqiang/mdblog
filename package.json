@@ -22,7 +22,7 @@
     "cross-env": "^5.2.1",
     "font-awesome": "^4.7.0",
     "github-markdown-css": "^3.0.1",
-    "highlight.js": "^9.15.6",
+    "highlight.js": "^10.1.2",
     "jquery": "^3.5.0",
     "laravel-mix": "^4.0.15",
     "popper.js": "^1.15.0",
