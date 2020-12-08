@@ -72,7 +72,7 @@ func getAritclesSpecifiedCategory(category *Category) Articles {
 	articles := make([]Article, 0)
 
 	for _, info := range filesInfo {
-		// 如果目录下的是文件，就不处理
+		// 如果目录下的是文件夹，就不处理
 		if info.IsDir() {
 			continue
 		}

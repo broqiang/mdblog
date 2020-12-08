@@ -45,7 +45,7 @@ type Category struct {
 	// 分类的描述
 	Description string
 
-	// 当是一个外联时，就不会再去获取对应的 markdown 文档
+	// 当是一个外链时，就不会再去获取对应的 markdown 文档
 	OutLink bool `toml:"out_link"`
 
 	// 是否是激活状态
