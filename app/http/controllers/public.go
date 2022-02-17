@@ -69,7 +69,7 @@ func mergeH(c *gin.Context, h gin.H) gin.H {
 	return mh
 }
 
-// ToKeywords 用都好分割，拼接关键词
+// ToKeywords 用逗号分隔，拼接关键词
 func ToKeywords(works ...string) string {
 	return strings.Join(works, ",")
 }
@@ -90,7 +90,7 @@ func Webhook(c *gin.Context) {
 
 	pullDocs()
 
-	// 从新初始化博客列表的内容
+	// 重新初始化博客列表的内容
 	mdfile.Model.Reload()
 }
 
@@ -132,7 +132,7 @@ func checkSecret(singn string, body []byte) bool {
 	singnature := make([]byte, 20)
 	hex.Decode(singnature, []byte(singn[5:]))
 
-	// 比较签名是否一直
+	// 比较签名是否一致
 	if hmac.Equal(singnature, mKey) {
 		return true
 	}

@@ -24,8 +24,8 @@ func New(e *gin.Engine) {
 
 		// 首页
 		front.GET("/", controllers.Home)
-		// about 页
 
+		// about 页
 		front.GET("/about", controllers.About)
 
 		// 博客文章详情
