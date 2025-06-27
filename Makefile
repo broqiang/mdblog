@@ -40,26 +40,27 @@ build:
 	GOOS=linux GOARCH=amd64 $(GOCMD) build -o $(BUILD_DIR)/$(BINARY_NAME) ./$(MAIN_PATH)
 	@echo "编译完成: $(BUILD_DIR)/$(BINARY_NAME)"
 
-# 编译并上传到服务器，重启服务并检测
+# 编译、上传并重启服务
 scp: build
 	@echo "上传文件到服务器..."
-	scp $(BUILD_DIR)/$(BINARY_NAME) $(SERVER_USER)@$(SERVER_HOST):$(SERVER_PATH)/
-	@echo "上传完成"
+	scp build/mdblog $(SERVER_USER)@$(SERVER_HOST):$(SERVER_PATH)/
+	scp -r web $(SERVER_USER)@$(SERVER_HOST):$(SERVER_PATH)/
 	@echo "重启服务..."
 	ssh $(SERVER_USER)@$(SERVER_HOST) "sudo systemctl restart mdblog"
 	@echo "等待服务启动..."
 	@sleep 5
 	@echo "检测服务状态..."
-	@if ssh $(SERVER_USER)@$(SERVER_HOST) "nc -z localhost $(SERVER_PORT)"; then \
+	@if ssh $(SERVER_USER)@$(SERVER_HOST) "nc -z localhost $(SERVER_PORT)" >/dev/null 2>&1; then \
 		echo "✅ 服务启动成功，端口 $(SERVER_PORT) 可访问"; \
-		ssh $(SERVER_USER)@$(SERVER_HOST) "sudo systemctl status mdblog --no-pager"; \
-		echo "查看最新日志:"; \
-		ssh $(SERVER_USER)@$(SERVER_HOST) "tail -5 $(SERVER_PATH)/logs/mdblog.log"; \
+		ssh $(SERVER_USER)@$(SERVER_HOST) "sudo systemctl status mdblog --no-pager -l"; \
+		echo ""; \
+		echo "📊 最新日志:"; \
+		ssh $(SERVER_USER)@$(SERVER_HOST) "tail -n 5 /bro/mdblog/logs/mdblog.log"; \
 	else \
 		echo "❌ 服务启动失败，端口 $(SERVER_PORT) 不可访问"; \
-		echo "查看服务状态:"; \
-		ssh $(SERVER_USER)@$(SERVER_HOST) "sudo systemctl status mdblog --no-pager"; \
-		echo "查看错误日志:"; \
-		ssh $(SERVER_USER)@$(SERVER_HOST) "tail -10 $(SERVER_PATH)/logs/mdblog.log"; \
+		ssh $(SERVER_USER)@$(SERVER_HOST) "sudo systemctl status mdblog --no-pager -l"; \
+		echo ""; \
+		echo "📊 错误日志:"; \
+		ssh $(SERVER_USER)@$(SERVER_HOST) "tail -n 10 /bro/mdblog/logs/mdblog.log"; \
 		exit 1; \
 	fi 

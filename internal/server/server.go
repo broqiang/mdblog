@@ -2,43 +2,50 @@ package server
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
-	"mdblog/assets"
 	"mdblog/internal/config"
 	"mdblog/internal/data"
-
-	"io/fs"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Server Web服务器
 type Server struct {
-	host        string
-	port        int
-	dataManager *data.Manager
-	engine      *gin.Engine
-	server      *http.Server
+	host           string
+	port           int
+	dataManager    *data.Manager
+	engine         *gin.Engine
+	server         *http.Server
+	embeddedAssets *embed.FS // 嵌入的资源文件系统
 }
 
 // NewServer 创建新的Web服务器
 func NewServer(host string, port int, manager *data.Manager) *Server {
+	return NewServerWithAssets(host, port, manager, nil)
+}
+
+// NewServerWithAssets 创建支持嵌入资源的Web服务器
+func NewServerWithAssets(host string, port int, manager *data.Manager, embeddedAssets *embed.FS) *Server {
 	// 设置 Gin 为发布模式
 	gin.SetMode(gin.ReleaseMode)
 
 	engine := gin.New()
 
 	srv := &Server{
-		host:        host,
-		port:        port,
-		dataManager: manager,
-		engine:      engine,
+		host:           host,
+		port:           port,
+		dataManager:    manager,
+		engine:         engine,
+		embeddedAssets: embeddedAssets,
 	}
 
 	// 初始化模板
@@ -129,20 +136,44 @@ func (s *Server) initTemplates() {
 		},
 	}
 
-	// 从嵌入的文件系统创建子文件系统
-	templatesSubFS, err := fs.Sub(assets.Templates, "web/templates")
-	if err != nil {
-		log.Fatalf("无法创建模板子文件系统: %v", err)
-	}
+	// 优先使用嵌入的文件系统
+	if s.embeddedAssets != nil {
+		log.Println("使用嵌入的模板文件系统")
 
-	// 解析所有模板文件
-	tmpl, err := template.New("").Funcs(funcMap).ParseFS(templatesSubFS, "*/*")
-	if err != nil {
-		log.Fatalf("解析模板失败: %v", err)
-	}
+		// 从嵌入的文件系统创建模板子文件系统
+		templatesSubFS, err := fs.Sub(*s.embeddedAssets, "web/templates")
+		if err != nil {
+			log.Fatalf("无法创建嵌入模板子文件系统: %v", err)
+		}
 
-	// 设置模板到 Gin 引擎
-	s.engine.SetHTMLTemplate(tmpl)
+		// 解析所有模板文件，需要指定具体的路径
+		tmpl, err := template.New("").Funcs(funcMap).ParseFS(templatesSubFS,
+			"layouts/head.html",
+			"layouts/header.html",
+			"layouts/footer.html",
+			"layouts/js.html",
+			"posts/index.html",
+			"posts/detail.html",
+			"posts/category.html")
+		if err != nil {
+			log.Fatalf("解析嵌入模板失败: %v", err)
+		}
+
+		// 设置模板到 Gin 引擎
+		s.engine.SetHTMLTemplate(tmpl)
+	} else {
+		log.Println("使用文件系统模板")
+
+		// 检查模板目录是否存在
+		templatesDir := "web/templates"
+		if _, err := os.Stat(templatesDir); os.IsNotExist(err) {
+			log.Fatalf("模板目录不存在: %s。请确保在项目根目录运行或使用嵌入模式", templatesDir)
+		}
+
+		// 使用 Gin 的模板引擎，加载所有子目录的模板文件
+		s.engine.SetFuncMap(funcMap)
+		s.engine.LoadHTMLGlob("web/templates/*/*")
+	}
 }
 
 // setupMiddleware 设置中间件
@@ -170,14 +201,30 @@ func (s *Server) setupMiddleware() {
 
 // setupRoutes 设置路由
 func (s *Server) setupRoutes() {
-	// 从嵌入的文件系统创建静态文件子系统
-	staticSubFS, err := fs.Sub(assets.Static, "web/static")
-	if err != nil {
-		log.Fatalf("无法创建静态文件子文件系统: %v", err)
-	}
+	// 优先使用嵌入的文件系统
+	if s.embeddedAssets != nil {
+		log.Println("使用嵌入的静态文件系统")
 
-	// 静态文件路由 - 使用嵌入的文件系统
-	s.engine.StaticFS("/static", http.FS(staticSubFS))
+		// 从嵌入的文件系统创建静态文件子系统
+		staticSubFS, err := fs.Sub(*s.embeddedAssets, "web/static")
+		if err != nil {
+			log.Fatalf("无法创建嵌入静态文件子文件系统: %v", err)
+		}
+
+		// 静态文件路由 - 使用嵌入的文件系统
+		s.engine.StaticFS("/static", http.FS(staticSubFS))
+	} else {
+		log.Println("使用文件系统静态文件")
+
+		// 检查静态文件目录是否存在
+		staticDir := "web/static"
+		if _, err := os.Stat(staticDir); os.IsNotExist(err) {
+			log.Fatalf("静态文件目录不存在: %s。请确保在项目根目录运行或使用嵌入模式", staticDir)
+		}
+
+		// 静态文件路由
+		s.engine.Static("/static", "web/static")
+	}
 
 	// API路由组
 	api := s.engine.Group("/api")

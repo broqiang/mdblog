@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN" class="h-100">
   <head>
-    {{template "layouts/_head.html" .}}
+    {{template "layouts/head.html" .}}
   </head>
 
   <body class="d-flex flex-column h-100">
-    {{template "layouts/_header.html" .}}
+    {{template "layouts/header.html" .}}
 
     <main class="flex-shrink-0 main">
       <div class="container">
@@ -103,7 +103,7 @@
       </div>
     </main>
 
-    {{template "layouts/_footer.html" .}} {{template "layouts/_js.html" .}}
+    {{template "layouts/footer.html" .}} {{template "layouts/js.html" .}}
   </body>
 </html>
 {{end}}
