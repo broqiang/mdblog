@@ -1,4 +1,4 @@
-# MDlog - Markdown 博客系统 PRD
+# MDBlog - Markdown 博客系统 PRD
 
 ## 🎯 项目概述
 
