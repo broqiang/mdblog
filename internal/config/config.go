@@ -3,7 +3,7 @@ package config
 // 应用配置常量
 const (
 	// 服务器配置
-	DefaultPort         = 8080
+	DefaultPort         = 8091
 	DefaultHost         = "0.0.0.0"
 	ReadTimeoutSeconds  = 30
 	WriteTimeoutSeconds = 30
