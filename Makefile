@@ -2,7 +2,7 @@
 # 
 # 使用方法：
 #   make dev   - 开发模式运行
-#   make build - 交叉编译 Linux 可执行文件
+#   make build - 交叉编译 Linux 可执行文件  
 #   make scp   - 编译并上传到服务器，重启服务并检测启动状态
 #
 # 配置服务器信息：
@@ -11,11 +11,15 @@
 #     SERVER_HOST=192.168.1.100
 #     SERVER_USER=root
 #     SERVER_PATH=/bro/mdblog
+#
+# 注意：
+#   服务器地址和端口已硬编码在程序中 (0.0.0.0:8080)
+#   如需修改，请编辑 internal/config/config.go 并重新编译
 
 # 构建变量
 BINARY_NAME=mdblog
 BUILD_DIR=build
-MAIN_PATH=cmd/mdblog
+MAIN_PATH=.
 
 # 服务器配置（请根据实际情况修改）
 SERVER_HOST=your-server-host
@@ -31,13 +35,13 @@ GOCMD=go
 # 开发模式运行
 dev:
 	@echo "开发模式运行..."
-	$(GOCMD) run ./$(MAIN_PATH)
+	$(GOCMD) run main.go
 
 # 交叉编译 Linux 可执行文件
 build:
 	@echo "交叉编译 Linux 可执行文件..."
 	@mkdir -p $(BUILD_DIR)
-	GOOS=linux GOARCH=amd64 $(GOCMD) build -o $(BUILD_DIR)/$(BINARY_NAME) ./$(MAIN_PATH)
+	GOOS=linux GOARCH=amd64 $(GOCMD) build -o $(BUILD_DIR)/$(BINARY_NAME) main.go
 	@echo "编译完成: $(BUILD_DIR)/$(BINARY_NAME)"
 
 # 编译、上传并重启服务
