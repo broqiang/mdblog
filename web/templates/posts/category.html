@@ -1,0 +1,109 @@
+{{define "posts/category.html"}}
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-100">
+  <head>
+    {{template "layouts/_head.html" .}}
+  </head>
+
+  <body class="d-flex flex-column h-100">
+    {{template "layouts/_header.html" .}}
+
+    <main class="flex-shrink-0 main">
+      <div class="container">
+        <div class="posts-grid">
+          {{range .Posts}}
+          <article
+            class="post-card"
+            onclick="window.location.href='/post/{{.ID}}'"
+          >
+            <div class="post-header">
+              <h2 class="post-title">
+                <a href="/post/{{.ID}}" onclick="event.stopPropagation()"
+                  >{{.Title}}</a
+                >
+              </h2>
+              <div class="post-meta">
+                <div class="post-meta-row">
+                  <span class="post-author">
+                    <i class="icon author-icon"></i>
+                    {{.Author}}
+                  </span>
+                  <span class="post-date">
+                    <i class="icon time-icon"></i>
+                    {{.CreateTime.Format "2006-01-02 15:04"}}
+                  </span>
+                  {{if .Tags}}
+                  <div class="post-tags-inline">
+                    {{range .Tags}}
+                    <span class="tag-inline">🏷️ {{.}}</span>
+                    {{end}}
+                  </div>
+                  {{end}}
+                </div>
+                {{if .Tags}}
+                <div class="post-tags-mobile">
+                  {{range .Tags}}
+                  <span class="tag-inline">🏷️ {{.}}</span>
+                  {{end}}
+                </div>
+                {{end}}
+              </div>
+            </div>
+
+            <div class="post-summary">{{.Summary}}</div>
+          </article>
+          {{end}}
+        </div>
+
+        {{if gt .Total .PageSize}}
+        <div class="pagination">
+          {{if gt .Page 1}}
+          <a
+            href="/category/{{$.Category}}?page={{subtract .Page 1}}"
+            class="page-link prev"
+          >
+            <span>← 上一页</span>
+          </a>
+          {{end}}
+
+          <div class="page-numbers">
+            {{$currentPage := .Page}} {{$totalPages := ceil .Total .PageSize}}
+            {{$startPage := max 1 (subtract $currentPage 2)}} {{$endPage := min
+            $totalPages (add $currentPage 2)}} {{if gt $startPage 1}}
+            <a href="/category/{{$.Category}}?page=1" class="page-number">1</a>
+            {{if gt $startPage 2}}<span class="page-ellipsis">...</span>{{end}}
+            {{end}} {{range $i := seq $startPage $endPage}} {{if eq $i
+            $currentPage}}
+            <span class="page-number current">{{$i}}</span>
+            {{else}}
+            <a href="/category/{{$.Category}}?page={{$i}}" class="page-number"
+              >{{$i}}</a
+            >
+            {{end}} {{end}} {{if lt $endPage $totalPages}} {{if lt $endPage
+            (subtract $totalPages 1)}}<span class="page-ellipsis">...</span
+            >{{end}}
+            <a
+              href="/category/{{$.Category}}?page={{$totalPages}}"
+              class="page-number"
+              >{{$totalPages}}</a
+            >
+            {{end}}
+          </div>
+
+          {{if lt .Page (ceil .Total .PageSize)}}
+          <a
+            href="/category/{{$.Category}}?page={{add .Page 1}}"
+            class="page-link next"
+          >
+            <span>下一页 →</span>
+          </a>
+          {{end}}
+        </div>
+        {{end}}
+      </div>
+    </main>
+
+    {{template "layouts/_footer.html" .}} {{template "layouts/_js.html" .}}
+  </body>
+</html>
+{{end}}

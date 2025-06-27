@@ -1,0 +1,57 @@
+{{define "posts/detail.html"}}
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-100">
+  <head>
+    {{template "layouts/_head.html" .}}
+  </head>
+
+  <body class="d-flex flex-column h-100">
+    {{template "layouts/_header.html" .}}
+
+    <main class="flex-shrink-0 main">
+      <div class="post-layout">
+        <article class="post-detail">
+          <header class="post-header">
+            <h1 class="post-title">{{.Post.Title}}</h1>
+            <div class="post-meta">
+              <div class="post-meta-row">
+                <span class="post-author">
+                  <i class="icon author-icon"></i>
+                  {{.Post.Author}}
+                </span>
+                <span class="post-date">
+                  <i class="icon time-icon"></i>
+                  Created {{.Post.CreateTime.Format "2006-01-02"}}
+                </span>
+                {{if .Post.UpdateTime.After .Post.CreateTime}}
+                <span class="post-updated">
+                  <i class="icon">✏️</i>
+                  Updated {{.Post.UpdateTime.Format "2006-01-02"}}
+                </span>
+                {{end}}
+              </div>
+              {{if .Post.Tags}}
+              <div class="post-tags-inline">
+                {{range .Post.Tags}}
+                <span class="tag-inline">🏷️ {{.}}</span>
+                {{end}}
+              </div>
+              {{end}} {{if .Post.Tags}}
+              <div class="post-tags-mobile">
+                {{range .Post.Tags}}
+                <span class="tag-inline">🏷️ {{.}}</span>
+                {{end}}
+              </div>
+              {{end}}
+            </div>
+          </header>
+
+          <div class="post-content">{{safeHTML .Post.HTML}}</div>
+        </article>
+      </div>
+    </main>
+
+    {{template "layouts/_footer.html" .}} {{template "layouts/_js.html" .}}
+  </body>
+</html>
+{{end}}

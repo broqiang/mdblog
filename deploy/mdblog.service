@@ -1,0 +1,55 @@
+# MDlog Systemd 服务配置文件
+# 
+# 安装步骤：
+# 1. 在服务器上创建目录：sudo mkdir -p /bro/mdblog/posts /bro/mdblog/logs
+# 2. 上传编译后的二进制文件到：/bro/mdblog/mdblog
+# 3. 复制此文件到：sudo cp deploy/mdblog.service /etc/systemd/system/
+# 4. 设置权限：sudo chown -R root:root /bro/mdblog
+# 5. 重载服务：sudo systemctl daemon-reload
+# 6. 启用服务：sudo systemctl enable mdblog
+# 7. 启动服务：sudo systemctl start mdblog
+#
+# 常用命令：
+# sudo systemctl status mdblog     # 查看状态
+# sudo systemctl restart mdblog    # 重启服务
+# sudo journalctl -u mdblog -f     # 查看系统日志
+# tail -f /bro/mdblog/logs/mdblog.log  # 查看应用日志
+#
+# 更新程序：
+# 1. 编译新版本：make build
+# 2. 上传到服务器：make scp
+# 3. 重启服务：sudo systemctl restart mdblog
+
+[Unit]
+Description=MDlog - Markdown Blog Server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/bro/mdblog
+ExecStart=/bro/mdblog/mdblog -host 0.0.0.0 -port 8080 -posts /bro/mdblog/posts
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=append:/bro/mdblog/logs/mdblog.log
+StandardError=append:/bro/mdblog/logs/mdblog.log
+SyslogIdentifier=mdblog
+
+# 安全设置
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/bro/mdblog
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+# 资源限制
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target 

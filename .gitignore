@@ -1,0 +1,61 @@
+# 编译输出
+/build/
+/dist/
+mdblog
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go 相关
+*.test
+*.out
+go.work
+go.work.sum
+
+# 依赖管理
+vendor/
+
+# 开发工具
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 配置文件（如果有敏感信息）
+config.yaml
+config.json
+.env
+.env.local
+
+# 测试覆盖率
+*.cover
+coverage.out
+
+# 本地开发文件
+local/
+dev/
+
+# 备份文件
+*.bak
+*.backup 
