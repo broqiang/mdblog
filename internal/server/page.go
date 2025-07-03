@@ -57,7 +57,6 @@ func (s *Server) handleIndex(c *gin.Context) {
 		"Page":       page,
 		"PageSize":   pageSize,
 		"Categories": s.manager.GetAllCategories(),
-		"Tags":       s.manager.GetAllTags(),
 	})
 }
 
@@ -129,51 +128,6 @@ func (s *Server) handleCategory(c *gin.Context) {
 		"Page":       page,
 		"PageSize":   pageSize,
 		"Categories": s.manager.GetAllCategories(),
-		"Tags":       s.manager.GetAllTags(),
-	})
-}
-
-// handleTag 处理标签页
-func (s *Server) handleTag(c *gin.Context) {
-	tag := c.Param("tag")
-
-	// 获取分页参数
-	page := 1
-	pageSize := config.PageSize
-
-	pageStr := c.Query("page")
-	if pageStr != "" {
-		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
-			page = p
-		}
-	}
-
-	// 获取该标签的所有文章
-	allPosts := s.manager.GetPostsByTag(tag)
-
-	// 分页处理
-	total := len(allPosts)
-	start := (page - 1) * pageSize
-	end := start + pageSize
-
-	var posts []*data.Post
-	if start >= total {
-		posts = []*data.Post{}
-	} else if end > total {
-		posts = allPosts[start:total]
-	} else {
-		posts = allPosts[start:end]
-	}
-
-	s.renderTemplate(c, "tag.html", map[string]interface{}{
-		"Title":      tag,
-		"Tag":        tag,
-		"Posts":      posts,
-		"Total":      total,
-		"Page":       page,
-		"PageSize":   pageSize,
-		"Categories": s.manager.GetAllCategories(),
-		"Tags":       s.manager.GetAllTags(),
 	})
 }
 
@@ -196,7 +150,6 @@ func (s *Server) handleSearchPage(c *gin.Context) {
 		"Title":      "搜索结果",
 		"Result":     result,
 		"Categories": s.manager.GetAllCategories(),
-		"Tags":       s.manager.GetAllTags(),
 	})
 }
 
@@ -216,7 +169,6 @@ func (s *Server) handleAbout(c *gin.Context) {
 		"Title":      post.Title,
 		"Post":       post,
 		"Categories": s.manager.GetAllCategories(),
-		"Tags":       s.manager.GetAllTags(),
 	}
 
 	s.renderTemplate(c, "posts/detail.html", data)

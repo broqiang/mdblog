@@ -97,7 +97,6 @@ func (s *Server) initTemplates() {
 			"posts/detail.html",
 			"posts/category.html",
 			"404.html",
-			"tag.html",
 			"search.html")
 		if err != nil {
 			log.Fatalf("解析嵌入模板失败: %v", err)

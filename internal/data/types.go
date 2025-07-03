@@ -42,26 +42,23 @@ func (ct *CustomTime) UnmarshalYAML(value *yaml.Node) error {
 
 // Post 文章数据结构
 type Post struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Author      string    `json:"author"`
-	GitHubURL   string    `json:"github_url"`
-	Content     string    `json:"content"`
-	HTML        string    `json:"html"`
-	Summary     string    `json:"summary"`
-	Category    string    `json:"category"`
-	CreateTime  time.Time `json:"created_at"`
-	UpdateTime  time.Time `json:"updated_at"`
-	Description string    `json:"description"`
-	Tags        []string  `json:"tags"`
-	FilePath    string    `json:"file_path"`
+	ID         string    `json:"id"`
+	Title      string    `json:"title"`
+	Author     string    `json:"author"`
+	GitHubURL  string    `json:"github_url"`
+	Content    string    `json:"content"`
+	HTML       string    `json:"html"`
+	Summary    string    `json:"summary"`
+	Category   string    `json:"category"`
+	CreateTime time.Time `json:"create_time"`
+	UpdateTime time.Time `json:"update_time"`
+	FilePath   string    `json:"file_path"`
 }
 
 // BlogData 博客数据结构
 type BlogData struct {
 	Posts       map[string]*Post    `json:"posts"`
 	Categories  map[string][]string `json:"categories"`
-	Tags        map[string][]string `json:"tags"`
 	SearchIndex map[string][]string `json:"search_index"`
 	LastUpdate  time.Time           `json:"last_update"`
 }
@@ -83,5 +80,4 @@ type FrontMatter struct {
 	CreatedAt   CustomTime `yaml:"created_at"`
 	UpdatedAt   CustomTime `yaml:"updated_at"`
 	Description string     `yaml:"description"`
-	Tags        []string   `yaml:"tags"`
 }

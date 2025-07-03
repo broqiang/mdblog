@@ -32,21 +32,7 @@
                     <i class="icon time-icon"></i>
                     {{.CreateTime.Format "2006-01-02 15:04"}}
                   </span>
-                  {{if .Tags}}
-                  <div class="post-tags-inline">
-                    {{range .Tags}}
-                    <span class="tag-inline">🏷️ {{.}}</span>
-                    {{end}}
-                  </div>
-                  {{end}}
                 </div>
-                {{if .Tags}}
-                <div class="post-tags-mobile">
-                  {{range .Tags}}
-                  <span class="tag-inline">🏷️ {{.}}</span>
-                  {{end}}
-                </div>
-                {{end}}
               </div>
             </div>
 

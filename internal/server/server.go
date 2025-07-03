@@ -111,13 +111,12 @@ func (s *Server) setupRoutes() {
 		s.engine.Static("/static", "web/static")
 	}
 
-	// API路由组
+	// API路由
 	api := s.engine.Group("/api")
 	{
 		api.GET("/posts", s.handleGetPosts)
-		api.GET("/posts/*id", s.handleGetPost)
+		api.GET("/posts/:id", s.handleGetPost)
 		api.GET("/categories", s.handleGetCategories)
-		api.GET("/tags", s.handleGetTags)
 		api.GET("/search", s.handleSearch)
 	}
 
@@ -134,7 +133,6 @@ func (s *Server) setupRoutes() {
 	s.engine.GET("/", s.handleIndex)
 	s.engine.GET("/post/*id", s.handlePostDetail)
 	s.engine.GET("/category/:category", s.handleCategory)
-	s.engine.GET("/tag/:tag", s.handleTag)
 	s.engine.GET("/search", s.handleSearchPage)
 	s.engine.GET("/about", s.handleAbout)
 

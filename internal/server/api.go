@@ -88,12 +88,6 @@ func (s *Server) handleGetCategories(c *gin.Context) {
 	c.JSON(http.StatusOK, categories)
 }
 
-// handleGetTags 处理获取标签API
-func (s *Server) handleGetTags(c *gin.Context) {
-	tags := s.manager.GetAllTags()
-	c.JSON(http.StatusOK, tags)
-}
-
 // handleSearch 处理搜索API
 func (s *Server) handleSearch(c *gin.Context) {
 	query := c.Query("q")

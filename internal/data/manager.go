@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"log"
 	"path/filepath"
 	"sort"
@@ -22,7 +23,6 @@ func NewManager(postsDir string) *Manager {
 		data: &BlogData{
 			Posts:       make(map[string]*Post),
 			Categories:  make(map[string][]string),
-			Tags:        make(map[string][]string),
 			SearchIndex: make(map[string][]string),
 			LastUpdate:  time.Now(),
 		},
@@ -97,39 +97,6 @@ func (m *Manager) GetPostsByCategory(category string) []*Post {
 	return posts
 }
 
-// GetPostsByTag 根据标签获取文章
-func (m *Manager) GetPostsByTag(tag string) []*Post {
-	m.mutex.RLock()
-	defer m.mutex.RUnlock()
-
-	var posts []*Post
-	seen := make(map[string]bool) // 用于去重
-
-	if postIDs, exists := m.data.Tags[tag]; exists {
-		for _, id := range postIDs {
-			// 跳过重复的ID
-			if seen[id] {
-				continue
-			}
-			seen[id] = true
-
-			if post, ok := m.data.Posts[id]; ok {
-				// 跳过about文章，它只在About页面显示
-				if post.ID != "about" {
-					posts = append(posts, post)
-				}
-			}
-		}
-	}
-
-	// 按创建时间倒序排序
-	sort.Slice(posts, func(i, j int) bool {
-		return posts[i].CreateTime.After(posts[j].CreateTime)
-	})
-
-	return posts
-}
-
 // GetAllCategories 获取所有分类
 func (m *Manager) GetAllCategories() map[string]int {
 	m.mutex.RLock()
@@ -140,18 +107,6 @@ func (m *Manager) GetAllCategories() map[string]int {
 		categories[category] = len(postIDs)
 	}
 	return categories
-}
-
-// GetAllTags 获取所有标签
-func (m *Manager) GetAllTags() map[string]int {
-	m.mutex.RLock()
-	defer m.mutex.RUnlock()
-
-	tags := make(map[string]int)
-	for tag, postIDs := range m.data.Tags {
-		tags[tag] = len(postIDs)
-	}
-	return tags
 }
 
 // Search 搜索文章
@@ -207,16 +162,27 @@ func (m *Manager) Search(query string, page, pageSize int) *SearchResult {
 }
 
 // UpdatePost 更新文章
-func (m *Manager) UpdatePost(post *Post) {
+func (m *Manager) UpdatePost(post *Post) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	// 更新文章
-	m.data.Posts[post.ID] = post
+	// 删除旧的分类映射
+	if existingPost, exists := m.data.Posts[post.ID]; exists {
+		oldCategory := existingPost.Category
+		if postIDs, ok := m.data.Categories[oldCategory]; ok {
+			for i, id := range postIDs {
+				if id == post.ID {
+					m.data.Categories[oldCategory] = append(postIDs[:i], postIDs[i+1:]...)
+					break
+				}
+			}
+		}
+	}
 
-	// 更新分类索引 - 避免重复添加
+	// 更新分类映射
 	if post.Category != "" {
 		categoryPosts := m.data.Categories[post.Category]
+		// 检查是否已存在，避免重复添加
 		found := false
 		for _, id := range categoryPosts {
 			if id == post.ID {
@@ -229,57 +195,70 @@ func (m *Manager) UpdatePost(post *Post) {
 		}
 	}
 
-	// 更新标签索引 - 避免重复添加
-	for _, tag := range post.Tags {
-		tagPosts := m.data.Tags[tag]
-		found := false
-		for _, id := range tagPosts {
-			if id == post.ID {
-				found = true
-				break
-			}
-		}
-		if !found {
-			m.data.Tags[tag] = append(tagPosts, post.ID)
-		}
-	}
-
+	// 更新文章
+	m.data.Posts[post.ID] = post
 	m.data.LastUpdate = time.Now()
+
+	return nil
 }
 
-// RemovePost 移除文章
-func (m *Manager) RemovePost(id string) {
+// DeletePost 删除文章
+func (m *Manager) DeletePost(postID string) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	if post, exists := m.data.Posts[id]; exists {
-		// 从分类索引中移除
+	post, exists := m.data.Posts[postID]
+	if !exists {
+		return fmt.Errorf("文章不存在: %s", postID)
+	}
+
+	// 从分类中删除
+	if post.Category != "" {
+		if postIDs, ok := m.data.Categories[post.Category]; ok {
+			for i, id := range postIDs {
+				if id == postID {
+					m.data.Categories[post.Category] = append(postIDs[:i], postIDs[i+1:]...)
+					break
+				}
+			}
+		}
+	}
+
+	// 删除文章
+	delete(m.data.Posts, postID)
+	m.data.LastUpdate = time.Now()
+
+	return nil
+}
+
+// cleanup 清理无效的索引
+func (m *Manager) cleanup() {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	m.data.Categories = make(map[string][]string)
+
+	// 重新构建索引
+	for _, post := range m.data.Posts {
+		// 重新构建分类索引
 		if post.Category != "" {
-			if postIDs, ok := m.data.Categories[post.Category]; ok {
-				for i, postID := range postIDs {
-					if postID == id {
-						m.data.Categories[post.Category] = append(postIDs[:i], postIDs[i+1:]...)
-						break
-					}
-				}
+			m.data.Categories[post.Category] = append(m.data.Categories[post.Category], post.ID)
+		}
+	}
+
+	// 清理空的索引
+	for category, postIDs := range m.data.Categories {
+		var cleanedIDs []string
+		for _, id := range postIDs {
+			if _, exists := m.data.Posts[id]; exists {
+				cleanedIDs = append(cleanedIDs, id)
 			}
 		}
-
-		// 从标签索引中移除
-		for _, tag := range post.Tags {
-			if postIDs, ok := m.data.Tags[tag]; ok {
-				for i, postID := range postIDs {
-					if postID == id {
-						m.data.Tags[tag] = append(postIDs[:i], postIDs[i+1:]...)
-						break
-					}
-				}
-			}
+		if len(cleanedIDs) == 0 {
+			delete(m.data.Categories, category)
+		} else {
+			m.data.Categories[category] = cleanedIDs
 		}
-
-		// 从文章列表中移除
-		delete(m.data.Posts, id)
-		m.data.LastUpdate = time.Now()
 	}
 }
 
@@ -290,7 +269,6 @@ func (m *Manager) Clear() {
 
 	m.data.Posts = make(map[string]*Post)
 	m.data.Categories = make(map[string][]string)
-	m.data.Tags = make(map[string][]string)
 	m.data.SearchIndex = make(map[string][]string)
 	m.data.LastUpdate = time.Now()
 }
@@ -311,19 +289,6 @@ func (m *Manager) CleanupDuplicates() {
 			}
 		}
 		m.data.Categories[category] = cleanedIDs
-	}
-
-	// 清理标签索引中的重复项
-	for tag, postIDs := range m.data.Tags {
-		seen := make(map[string]bool)
-		var cleanedIDs []string
-		for _, id := range postIDs {
-			if !seen[id] {
-				seen[id] = true
-				cleanedIDs = append(cleanedIDs, id)
-			}
-		}
-		m.data.Tags[tag] = cleanedIDs
 	}
 
 	m.data.LastUpdate = time.Now()

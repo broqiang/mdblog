@@ -112,7 +112,6 @@ func (m *Parser) ParseFile(filePath, postsDir string) (*data.Post, error) {
 		Category:   category,
 		CreateTime: createTime,
 		UpdateTime: updateTime,
-		Tags:       frontMatter.Tags,
 		FilePath:   filePath,
 	}
 
