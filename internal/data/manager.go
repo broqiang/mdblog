@@ -37,6 +37,11 @@ func (m *Manager) GetData() *BlogData {
 	return m.data
 }
 
+// GetPostsDir 获取 posts 目录路径
+func (m *Manager) GetPostsDir() string {
+	return m.postsDir
+}
+
 // GetPost 根据ID获取文章
 func (m *Manager) GetPost(id string) (*Post, bool) {
 	m.mutex.RLock()

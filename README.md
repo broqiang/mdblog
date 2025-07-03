@@ -103,7 +103,6 @@ author: "作者名称"
 github_url: "https://github.com/username"
 created_at: 2024-01-01T10:00:00
 updated_at: 2024-01-01T12:00:00
-description: "文章描述"
 tags: ["Go", "Web开发", "技术"]
 ---
 

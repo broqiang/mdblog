@@ -166,37 +166,123 @@ APP_PORT=8091                # 应用端口
 
 ## 🚧 开发中功能
 
-### Webhook 自动同步（50% 完成）
+### Webhook 自动同步（✅ 95% 完成）
 
 **目标**: 实现 Git 仓库变更时自动更新博客内容
 
 **已完成**:
 
 - ✅ HTTP 接口：`POST /webhook/gitee`
-- ✅ 基础请求解析
-- ✅ 错误处理机制
+- 🟡 签名验证（已实现多种算法，开发模式可跳过）
+- ✅ Git 操作：`git pull` 执行
+- ✅ 内存数据重新加载
+- ✅ 错误处理和日志记录
+- ✅ 健康检查接口：`GET /health`
+- ✅ Webhook 测试工具
+- ✅ 开发模式配置
 
-**待实现**:
+**已知问题**:
 
-- ❌ Webhook 签名验证（安全性）
-- ❌ Git 操作：`git pull` 执行
-- ❌ 内存数据重新加载
-- ❌ 增量更新优化
+- ⚠️ Gitee 签名验证算法与标准不同，目前采用开发模式跳过验证
+- 📋 生产环境建议使用 IP 白名单 + HTTPS 替代签名验证
 
-**技术设计**:
+**技术实现**:
 
 ```go
-type WebhookPayload struct {
+// Webhook 配置
+const (
+    WebhookSecret = "c85b7544d37c89280afcf912ec70f4083b18065d9e89966cae6059798f0dadf5"
+    WebhookBranch = "main"     // 监听的分支
+)
+
+// posts 目录路径动态确定：
+// 1. 命令行参数：./mdblog -posts /path/to/posts
+// 2. 默认位置：可执行文件同级的 posts 目录
+
+// Gitee Webhook 载荷结构
+type GiteeWebhookPayload struct {
+    Ref        string `json:"ref"`
     Repository struct {
-        Name   string `json:"name"`
-        Branch string `json:"ref"`
+        Name        string `json:"name"`
+        FullName    string `json:"full_name"`
+        CloneURL    string `json:"clone_url"`
+        SSHURL      string `json:"ssh_url"`
+        GitHTTPURL  string `json:"git_http_url"`
+        GitSSHURL   string `json:"git_ssh_url"`
     } `json:"repository"`
     Commits []struct {
-        Message string `json:"message"`
-        Files   []string `json:"modified"`
+        ID        string    `json:"id"`
+        Message   string    `json:"message"`
+        Timestamp time.Time `json:"timestamp"`
+        Author    struct {
+            Name  string `json:"name"`
+            Email string `json:"email"`
+        } `json:"author"`
+        Added    []string `json:"added"`
+        Removed  []string `json:"removed"`
+        Modified []string `json:"modified"`
     } `json:"commits"`
+    HeadCommit struct {
+        ID        string    `json:"id"`
+        Message   string    `json:"message"`
+        Timestamp time.Time `json:"timestamp"`
+        Author    struct {
+            Name  string `json:"name"`
+            Email string `json:"email"`
+        } `json:"author"`
+    } `json:"head_commit"`
+    Pusher struct {
+        Name  string `json:"name"`
+        Email string `json:"email"`
+    } `json:"pusher"`
 }
 ```
+
+**安全机制**:
+
+1. **HMAC-SHA256 签名验证**: 使用密钥验证请求来源的合法性
+2. **分支过滤**: 只处理来自 `main` 分支的推送事件
+3. **输入验证**: 验证请求方法、载荷格式和必需头部
+4. **错误处理**: 全面的错误捕获和日志记录
+
+**工作流程**:
+
+1. 接收 Gitee Webhook POST 请求
+2. 验证 `X-Gitee-Token` 签名
+3. 解析 JSON 载荷并检查目标分支
+4. 执行 `git pull origin main` 更新 posts 仓库
+5. 清空内存缓存并重新加载所有文章
+6. 返回同步结果和统计信息
+
+**使用说明**:
+
+```bash
+# 测试本地 Webhook
+make webhook-test-local
+
+# 测试生产环境 Webhook
+make webhook-test-remote
+
+# 健康检查
+curl http://localhost:8091/health
+
+# 查看 Webhook 日志
+tail -f /bro/mdblog/logs/mdblog.log | grep -i webhook
+```
+
+**Gitee 配置**:
+
+- **Webhook URL**: `https://broqiang.com/webhook/gitee`
+- **密码**: `c85b7544d37c89280afcf912ec70f4083b18065d9e89966cae6059798f0dadf5`
+- **触发事件**: Push
+- **分支过滤**: main
+
+**性能优化**:
+
+- 使用读写锁保证并发安全
+- 完整重载而非增量更新（确保数据一致性）
+- 异步处理，不阻塞 Webhook 响应
+- Git 操作超时控制和错误恢复
 
 ## 📋 计划功能
 

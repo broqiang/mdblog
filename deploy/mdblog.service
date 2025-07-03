@@ -27,8 +27,8 @@ Wants=network.target
 
 [Service]
 Type=simple
-User=root
-Group=root
+User=bro
+Group=bro
 WorkingDirectory=/bro/mdblog
 ExecStart=/bro/mdblog/mdblog -posts /bro/mdblog/posts
 ExecReload=/bin/kill -HUP $MAINPID

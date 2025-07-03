@@ -46,6 +46,7 @@ build:
 	GOOS=linux GOARCH=amd64 $(GOCMD) build -o $(BUILD_DIR)/$(BINARY_NAME) main.go
 	@echo "编译完成: $(BUILD_DIR)/$(BINARY_NAME)"
 
+
 # 编译、停止服务、上传并重启服务
 scp: build
 	@echo "停止服务..."
