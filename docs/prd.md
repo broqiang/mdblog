@@ -2,7 +2,7 @@
 
 ## 🎯 项目概述
 
-MDlog 是一个基于 Go 语言开发的现代化 Markdown 博客系统，专注于简单、高效、易部署的博客解决方案。系统支持实时搜索、分类标签、响应式设计，并实现了真正的单文件部署。
+MDlog 是一个基于 Go 语言开发的现代化 Markdown 博客系统，专注于简单、高效、易部署的博客解决方案。系统支持实时搜索、分类导航、响应式设计，并实现了真正的单文件部署。
 
 ### 核心优势
 
@@ -11,6 +11,595 @@ MDlog 是一个基于 Go 语言开发的现代化 Markdown 博客系统，专注
 - **易部署**: 单文件部署，一键自动化
 - **现代化**: 响应式设计，移动端优化
 - **开发友好**: 热重载，Markdown 驱动
+
+## 🔧 开发过程与技术要点
+
+### 核心技术决策
+
+#### 1. 架构设计原则
+
+**单一职责模块化设计**：
+
+- `internal/config/` - 全局配置常量，避免硬编码
+- `internal/data/` - 数据管理和缓存逻辑
+- `internal/markdown/` - Markdown 解析专用模块
+- `internal/server/` - Web 服务器和路由处理
+
+**内存优先策略**：
+
+- 启动时一次性加载所有文章到内存（适合中小型博客）
+- 使用 `sync.RWMutex` 保证并发安全
+- 缓存文章内容、分类索引、搜索索引
+
+#### 2. 关键技术选型
+
+**Markdown 处理链**：
+
+```go
+// 使用 Goldmark + Chroma 组合
+markdown := goldmark.New(
+    goldmark.WithExtensions(
+        extension.GFM,              // GitHub Flavored Markdown
+        extension.Footnote,         // 脚注支持
+        highlighting.NewHighlighting(
+            highlighting.WithStyle("github"),
+            highlighting.WithFormatOptions(),
+        ),
+    ),
+    goldmark.WithParserOptions(
+        parser.WithAutoHeadingID(), // 自动生成标题ID
+    ),
+    goldmark.WithRendererOptions(
+        html.WithHardWraps(),       // 硬换行
+        html.WithXHTML(),           // XHTML 兼容
+    ),
+)
+```
+
+**前端技术栈**：
+
+- 原生 JavaScript（无框架依赖，减少复杂度）
+- CSS3 Flexbox/Grid（响应式布局）
+- SVG 图标（矢量，内嵌，性能好）
+
+#### 3. 静态资源嵌入方案
+
+**关键实现**：
+
+```go
+//go:embed web
+var EmbeddedAssets embed.FS
+
+// 服务静态文件的关键代码
+func (s *Server) setupStaticRoutes() {
+    // 嵌入的文件系统需要去掉前缀
+    webFS, _ := fs.Sub(s.assets, "web")
+    s.router.StaticFS("/static", http.FS(webFS))
+}
+```
+
+**优势**：
+
+- 真正的单文件部署
+- 避免静态文件丢失问题
+- 版本一致性保证
+
+### 开发过程中的关键问题与解决方案
+
+#### 1. **Gitee Webhook 签名验证实现**
+
+**问题描述**：
+Gitee 的 Webhook 签名机制与 GitHub/GitLab 标准类似，但实现细节稍有不同。
+
+**技术分析**：
+
+- GitHub: `X-Hub-Signature-256: sha256=xxxxx`（HMAC-SHA256）
+- Gitee: `X-Gitee-Token: xxxxx` + `X-Gitee-Timestamp: xxxxx`（也使用 HMAC-SHA256，但算法稍有不同）
+
+**解决方案**：
+
+```go
+// Gitee 签名验证实现
+func verifyGiteeSignature(signature, timestamp, secret string) bool {
+    timestampInt, err := strconv.ParseInt(timestamp, 10, 64)
+    if err != nil {
+        return false
+    }
+    // 构造待签名字符串：timestamp + "\n" + secret
+    stringToSign := fmt.Sprintf("%d\n%s", timestampInt, secret)
+    mac := hmac.New(sha256.New, []byte(secret))
+    mac.Write([]byte(stringToSign))
+    signData := mac.Sum(nil)
+    encodedSign := base64.StdEncoding.EncodeToString(signData)
+    urlEncodedSign := url.PathEscape(encodedSign)
+    return urlEncodedSign == signature
+}
+
+// 验证逻辑
+giteeToken := r.Header.Get("X-Gitee-Token")
+giteeTimestamp := r.Header.Get("X-Gitee-Timestamp")
+if !verifyGiteeSignature(giteeToken, giteeTimestamp, config.WebhookSecret) {
+    return false
+}
+```
+
+**关键技术点**：
+
+1. **签名算法**：`HMAC-SHA256(timestamp + "\n" + secret)` → Base64 → URL 编码
+2. **时间戳验证**：防止重放攻击，设置时间窗口（如 1 小时）
+3. **头部字段**：同时需要 `X-Gitee-Token` 和 `X-Gitee-Timestamp`
+
+**生产环境安全策略**：
+
+- 设置复杂的 WebhookSecret（64 位随机字符串）
+- 启用 HTTPS 加密传输
+- 配置时间戳验证窗口，防重放攻击
+- 生产环境使用 Nginx 作为反向代理，所有请求均经由 Nginx 转发到 Go 服务，HTTPS 证书统一配置在 Nginx 层
+
+#### 2. **Git 操作权限问题**
+
+**问题描述**：
+服务器上使用 `bro` 用户运行服务，确保 Git 操作具有正确的权限和认证。
+
+**实际部署架构**：
+
+- **服务运行用户**: `bro`（普通用户，非 root）
+- **用户家目录**: `/bro`
+- **SSH 密钥配置**: 本地电脑与服务器间已配置公钥认证
+- **Git 仓库认证**: Gitee SSH 公钥使用相同密钥对
+
+**技术解决方案**：
+
+```go
+// Git 操作前检查权限
+func (dm *DataManager) executeGitPull() error {
+    // 检查目录权限
+    if err := dm.checkGitPermissions(); err != nil {
+        return fmt.Errorf("权限检查失败: %v", err)
+    }
+
+    // 执行 git pull 带超时控制
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    cmd := exec.CommandContext(ctx, "git", "pull", "origin", "main")
+    cmd.Dir = dm.postsDir
+
+    output, err := cmd.CombinedOutput()
+    if err != nil {
+        return fmt.Errorf("git pull 失败: %v, 输出: %s", err, output)
+    }
+
+    return nil
+}
+```
+
+**SSH 密钥配置详解**：
+
+1. **本地密钥生成**：
+
+   在本地电脑上使用如下命令生成 SSH 密钥对：
+
+   ```bash
+   ssh-keygen -t rsa -b 4096 -C "your-email@example.com"
+   ```
+
+   生成后，可通过如下命令查看密钥文件：
+
+   ```bash
+   ls ~/.ssh
+   # 常见输出：id_rsa  id_rsa.pub  known_hosts
+   ```
+
+2. **服务器端配置** (`/bro/.ssh/authorized_keys`):
+
+   ```bash
+   # 将本地生成的公钥内容（id_rsa.pub）添加到服务器，允许免密码 SSH 连接
+   ssh-rsa AAAAB3NzaC1yc2E... your-local-computer
+   ```
+
+3. **Gitee SSH 公钥配置**:
+
+   ```bash
+   # 在 Gitee 设置中添加相同的公钥
+   # 路径：个人设置 → SSH 公钥 → 添加公钥
+   ```
+
+**服务启动脚本准备**：
+
+在进行权限验证前，需要提前在服务器上配置好 Systemd 的 service 启动脚本（如 /etc/systemd/system/mdblog.service），用于以 bro 用户身份启动 mdblog 服务，并实现开机自启、自动重启等功能。
+
+配置完成后，使用如下命令启动和管理服务：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable mdblog
+sudo systemctl start mdblog
+sudo systemctl status mdblog
+```
+
+**权限验证步骤**：
+
+```bash
+# 1. 验证 SSH 连接
+ssh bro@your-ip -p your-port
+
+# 2. 验证 Git SSH 连接
+ssh -T git@gitee.com
+
+# 3. 验证 Git 仓库访问
+cd /bro/mdblog && git pull origin main
+
+# 4. 检查文件权限
+ls -la /bro/mdblog/posts/
+```
+
+**最佳实践**：
+
+- **用户一致性**: 服务运行用户 `bro` 与 Git 仓库所有者保持一致
+- **SSH 密钥认证**: 使用相同的 SSH 密钥对（本地 ↔ 服务器，服务器 ↔Gitee）
+- **文件权限**: 确保 `bro` 用户对 posts 目录有完整的读写权限
+- **安全策略**: 使用普通用户运行服务，避免 root 权限风险
+
+**部署权限检查清单**：
+
+- ✅ `bro` 用户可以正常 SSH 登录服务器
+- ✅ 服务器可以通过 SSH 连接到 Gitee (`ssh -T git@gitee.com`)
+- ✅ `bro` 用户对 `/bro/mdblog/posts/` 目录有读写权限
+- ✅ Git 仓库配置正确（origin 指向 Gitee SSH URL）
+- ✅ Systemd 服务配置为 `bro` 用户运行
+
+### 并发安全设计
+
+**核心数据结构**：
+
+```go
+type DataManager struct {
+    mu          sync.RWMutex           // 读写锁
+    posts       map[string]*Post       // 文章缓存
+    categories  map[string][]string    // 分类索引
+    searchIndex map[string][]string    // 搜索索引
+}
+
+// 读操作（多个可并发）
+func (dm *DataManager) GetPost(id string) *Post {
+    dm.mu.RLock()
+    defer dm.mu.RUnlock()
+    return dm.posts[id]
+}
+
+// 写操作（独占锁）
+func (dm *DataManager) ReloadData() error {
+    dm.mu.Lock()
+    defer dm.mu.Unlock()
+
+    // 清空现有数据
+    dm.posts = make(map[string]*Post)
+    // 重新加载...
+
+    return nil
+}
+```
+
+**关键点**：
+
+- 读多写少的场景，优先使用 `sync.RWMutex`
+- 避免在锁内进行耗时操作（如文件 I/O）
+- Webhook 更新时使用完整重载而非增量更新（确保数据一致性）
+
+#### 4. **前端搜索优化**
+
+**防抖实现**：
+
+```javascript
+// 搜索防抖，避免频繁请求
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// 搜索实现
+const debouncedSearch = debounce(async (query) => {
+  if (query.length < 2) return;
+
+  try {
+    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    const results = await response.json();
+    displaySearchResults(results);
+  } catch (error) {
+    console.error("搜索失败:", error);
+  }
+}, 300);
+```
+
+**性能优化点**：
+
+- 输入长度限制（至少 2 个字符）
+- 防抖延迟 300ms
+- 结果数量限制
+- 错误处理
+
+#### 5. **路径处理的跨平台兼容性**
+
+**问题描述**：
+Windows 和 Linux 路径分隔符不同，需要统一处理。
+
+**解决方案**：
+
+```go
+import "path/filepath"
+
+// 始终使用 filepath 包进行路径操作
+func (dm *DataManager) getPostsDir() string {
+    // 获取可执行文件目录
+    execPath, _ := os.Executable()
+    execDir := filepath.Dir(execPath)
+
+    // 跨平台路径拼接
+    return filepath.Join(execDir, "posts")
+}
+
+// 生成文章 ID 时统一使用斜杠
+func generatePostID(filePath, postsDir string) string {
+    relPath, _ := filepath.Rel(postsDir, filePath)
+    // 将路径分隔符统一为斜杠（用于 URL）
+    return strings.ReplaceAll(relPath, string(filepath.Separator), "/")
+}
+```
+
+### 编码规范与最佳实践
+
+#### 1. **错误处理模式**
+
+**统一错误处理**：
+
+```go
+// 定义错误类型
+var (
+    ErrPostNotFound = errors.New("文章不存在")
+    ErrInvalidPath  = errors.New("无效路径")
+)
+
+// 错误包装
+func (dm *DataManager) LoadPost(filePath string) (*Post, error) {
+    if !filepath.IsAbs(filePath) {
+        return nil, fmt.Errorf("加载文章失败: %w", ErrInvalidPath)
+    }
+
+    content, err := os.ReadFile(filePath)
+    if err != nil {
+        return nil, fmt.Errorf("读取文件 %s 失败: %w", filePath, err)
+    }
+
+    // 继续处理...
+    return post, nil
+}
+
+// 调用方处理
+post, err := dm.LoadPost(path)
+if err != nil {
+    if errors.Is(err, ErrPostNotFound) {
+        // 特殊处理文章不存在
+    }
+    log.Printf("加载文章失败: %v", err)
+    return
+}
+```
+
+#### 2. **配置管理模式**
+
+**集中配置管理**：
+
+```go
+// internal/config/config.go
+package config
+
+const (
+    // 服务配置
+    DefaultPort = 8091
+    DefaultHost = "0.0.0.0"
+
+    // 业务配置
+    SummaryLines     = 3
+    PageSize         = 10
+    MaxSearchResults = 100
+
+    // Webhook 配置
+    WebhookSecret   = "your-secret"
+    WebhookBranch   = "main"
+    WebhookDevMode  = false  // 生产环境设为 false
+)
+```
+
+**环境配置支持**：
+
+```go
+// 支持环境变量覆盖
+func GetPort() int {
+    if port := os.Getenv("MDBLOG_PORT"); port != "" {
+        if p, err := strconv.Atoi(port); err == nil {
+            return p
+        }
+    }
+    return DefaultPort
+}
+```
+
+#### 3. **日志记录规范**
+
+**结构化日志**：
+
+```go
+import "log"
+
+// 统一日志格式
+func logInfo(format string, args ...interface{}) {
+    log.Printf("[INFO] "+format, args...)
+}
+
+func logError(format string, args ...interface{}) {
+    log.Printf("[ERROR] "+format, args...)
+}
+
+func logWebhook(format string, args ...interface{}) {
+    log.Printf("[WEBHOOK] "+format, args...)
+}
+
+// 使用示例
+logInfo("服务启动在端口 %d", port)
+logError("加载文章失败: %v", err)
+logWebhook("收到推送事件，分支: %s", branch)
+```
+
+#### 4. **测试驱动开发**
+
+**单元测试结构**：
+
+```go
+func TestMarkdownParser(t *testing.T) {
+    tests := []struct {
+        name     string
+        input    string
+        expected *Post
+        wantErr  bool
+    }{
+        {
+            name: "有效的文章",
+            input: `---
+title: "测试文章"
+author: "测试作者"
+---
+# 内容`,
+            expected: &Post{
+                Title: "测试文章",
+                Author: "测试作者",
+            },
+            wantErr: false,
+        },
+        {
+            name:    "无效的 Front Matter",
+            input:   "invalid yaml",
+            wantErr: true,
+        },
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            parser := NewMarkdownParser()
+            result, err := parser.Parse(tt.input)
+
+            if tt.wantErr {
+                assert.Error(t, err)
+                return
+            }
+
+            assert.NoError(t, err)
+            assert.Equal(t, tt.expected.Title, result.Title)
+            assert.Equal(t, tt.expected.Author, result.Author)
+        })
+    }
+}
+```
+
+#### 5. **性能监控点**
+
+**关键性能指标**：
+
+```go
+// 启动时间监控
+func (dm *DataManager) LoadAllPosts() error {
+    start := time.Now()
+    defer func() {
+        logInfo("加载文章耗时: %v", time.Since(start))
+    }()
+
+    // 加载逻辑...
+    return nil
+}
+
+// 内存使用监控
+func logMemoryUsage() {
+    var m runtime.MemStats
+    runtime.ReadMemStats(&m)
+    logInfo("内存使用: Alloc=%d KB, Sys=%d KB", m.Alloc/1024, m.Sys/1024)
+}
+
+// 搜索性能监控
+func (dm *DataManager) Search(query string) ([]*Post, error) {
+    start := time.Now()
+    defer func() {
+        logInfo("搜索 '%s' 耗时: %v", query, time.Since(start))
+    }()
+
+    // 搜索逻辑...
+    return results, nil
+}
+```
+
+### 部署与运维注意事项
+
+#### 1. **服务配置最佳实践**
+
+**Systemd 服务配置要点**：
+
+```ini
+[Unit]
+Description=MDBlog Service
+After=network.target
+
+[Service]
+Type=simple
+User=mdblog          # 避免使用 root
+Group=mdblog
+WorkingDirectory=/opt/mdblog
+ExecStart=/opt/mdblog/mdblog
+Restart=always      # 自动重启
+RestartSec=10       # 重启间隔
+
+# 安全设置
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/mdblog
+
+[Install]
+WantedBy=multi-user.target
+```
+
+#### 2. **监控与日志轮转**
+
+**日志轮转配置**：
+
+```bash
+# /etc/logrotate.d/mdblog
+/opt/mdblog/logs/*.log {
+    daily
+    missingok
+    rotate 30
+    compress
+    delaycompress
+    notifempty
+    sharedscripts
+    postrotate
+        systemctl reload mdblog
+    endscript
+}
+```
+
+### 未来技术债务
+
+1. **数据库支持**：当文章数量超过 1000 篇时，考虑引入轻量级数据库
+2. **缓存策略**：实现增量更新而非全量重载
+3. **多实例支持**：为高可用部署做准备
+4. **插件系统**：模块化扩展机制
+5. **国际化支持**：多语言界面和内容
 
 ## ✅ 已实现功能
 
@@ -36,7 +625,7 @@ github_url: "https://github.com/username"
 created_at: 2024-01-01T10:00:00
 updated_at: 2024-01-01T12:00:00
 description: "文章描述"
-tags: ["Go", "Web开发", "技术"]
+description: "技术博客文章"
 ---
 ```
 
@@ -48,7 +637,7 @@ tags: ["Go", "Web开发", "技术"]
 
 - 启动时一次性加载所有文章到内存
 - 使用 `sync.RWMutex` 保证并发安全
-- 多维度索引：分类索引、标签索引、搜索索引
+- 多维度索引：分类索引、搜索索引
 - 智能摘要生成（前 3 行文本内容）
 - 实时数据更新机制（为 Webhook 预留）
 
@@ -65,7 +654,7 @@ tags: ["Go", "Web开发", "技术"]
 **交互设计**:
 
 - 快捷键：双击 `Cmd`（macOS）/ `Ctrl`（Windows/Linux）
-- 搜索范围：文章标题、内容、标签
+- 搜索范围：文章标题、内容
 - 搜索算法：模糊匹配，大小写不敏感
 - 实时结果：输入即搜索，无需点击
 
@@ -92,9 +681,9 @@ tags: ["Go", "Web开发", "技术"]
 - 触摸友好的交互设计
 - SVG 矢量图标
 
-### 5. 分类标签系统
+### 5. 分类系统
 
-**功能描述**: 基于目录结构的自动分类和多标签支持
+**功能描述**: 基于目录结构的自动分类
 
 **分类规则**:
 
@@ -102,11 +691,10 @@ tags: ["Go", "Web开发", "技术"]
 - 根目录文章：默认分类 "其他"
 - 特殊处理：`about.md` 仅在关于页面显示
 
-**标签功能**:
+**分类功能**:
 
-- Front Matter 定义：`tags: ["Go", "Web开发"]`
-- 标签页面：`/tag/Go`
-- 多标签过滤支持
+- 分类页面：`/category/Go`
+- 文章按分类组织展示
 
 ### 6. 静态资源嵌入系统
 
@@ -164,27 +752,19 @@ APP_PORT=8091                # 应用端口
 - 自动重启：服务异常时自动恢复
 - 开机自启：系统重启后自动启动
 
-## 🚧 开发中功能
+### 9. Webhook 自动同步
 
-### Webhook 自动同步（✅ 95% 完成）
+**功能描述**: Git 仓库变更时自动更新博客内容
 
-**目标**: 实现 Git 仓库变更时自动更新博客内容
+**核心功能**:
 
-**已完成**:
-
-- ✅ HTTP 接口：`POST /webhook/gitee`
-- 🟡 签名验证（已实现多种算法，开发模式可跳过）
-- ✅ Git 操作：`git pull` 执行
-- ✅ 内存数据重新加载
-- ✅ 错误处理和日志记录
-- ✅ 健康检查接口：`GET /health`
-- ✅ Webhook 测试工具
-- ✅ 开发模式配置
-
-**已知问题**:
-
-- ⚠️ Gitee 签名验证算法与标准不同，目前采用开发模式跳过验证
-- 📋 生产环境建议使用 IP 白名单 + HTTPS 替代签名验证
+- HTTP 接口：`POST /webhook/gitee`
+- 签名验证：HMAC-SHA256 安全校验
+- Git 操作：自动执行 `git pull` 更新内容
+- 内存数据重新加载：实时更新博客数据
+- 错误处理和日志记录：完整的错误追踪
+- 健康检查接口：`GET /health`
+- Webhook 测试工具：开发和生产环境测试
 
 **技术实现**:
 
@@ -194,48 +774,6 @@ const (
     WebhookSecret = "c85b7544d37c89280afcf912ec70f4083b18065d9e89966cae6059798f0dadf5"
     WebhookBranch = "main"     // 监听的分支
 )
-
-// posts 目录路径动态确定：
-// 1. 命令行参数：./mdblog -posts /path/to/posts
-// 2. 默认位置：可执行文件同级的 posts 目录
-
-// Gitee Webhook 载荷结构
-type GiteeWebhookPayload struct {
-    Ref        string `json:"ref"`
-    Repository struct {
-        Name        string `json:"name"`
-        FullName    string `json:"full_name"`
-        CloneURL    string `json:"clone_url"`
-        SSHURL      string `json:"ssh_url"`
-        GitHTTPURL  string `json:"git_http_url"`
-        GitSSHURL   string `json:"git_ssh_url"`
-    } `json:"repository"`
-    Commits []struct {
-        ID        string    `json:"id"`
-        Message   string    `json:"message"`
-        Timestamp time.Time `json:"timestamp"`
-        Author    struct {
-            Name  string `json:"name"`
-            Email string `json:"email"`
-        } `json:"author"`
-        Added    []string `json:"added"`
-        Removed  []string `json:"removed"`
-        Modified []string `json:"modified"`
-    } `json:"commits"`
-    HeadCommit struct {
-        ID        string    `json:"id"`
-        Message   string    `json:"message"`
-        Timestamp time.Time `json:"timestamp"`
-        Author    struct {
-            Name  string `json:"name"`
-            Email string `json:"email"`
-        } `json:"author"`
-    } `json:"head_commit"`
-    Pusher struct {
-        Name  string `json:"name"`
-        Email string `json:"email"`
-    } `json:"pusher"`
-}
 ```
 
 **安全机制**:
@@ -254,22 +792,6 @@ type GiteeWebhookPayload struct {
 5. 清空内存缓存并重新加载所有文章
 6. 返回同步结果和统计信息
 
-**使用说明**:
-
-```bash
-# 测试本地 Webhook
-make webhook-test-local
-
-# 测试生产环境 Webhook
-make webhook-test-remote
-
-# 健康检查
-curl http://localhost:8091/health
-
-# 查看 Webhook 日志
-tail -f /bro/mdblog/logs/mdblog.log | grep -i webhook
-```
-
 **Gitee 配置**:
 
 - **Webhook URL**: `https://broqiang.com/webhook/gitee`
@@ -283,59 +805,6 @@ tail -f /bro/mdblog/logs/mdblog.log | grep -i webhook
 - 完整重载而非增量更新（确保数据一致性）
 - 异步处理，不阻塞 Webhook 响应
 - Git 操作超时控制和错误恢复
-
-## 📋 计划功能
-
-### 1. 主题系统（v2.0）
-
-**功能描述**: 支持亮色/暗色主题切换
-
-**设计方案**:
-
-- CSS 变量主题系统
-- 浏览器本地存储偏好
-- 一键切换按钮
-- 默认跟随系统主题
-
-### 2. 评论系统（v2.1）
-
-**功能描述**: 集成第三方评论系统
-
-**技术选型**:
-
-- Disqus 集成
-- Gitalk 集成（基于 GitHub Issues）
-- 自定义评论系统（可选）
-
-### 3. RSS 订阅（v2.2）
-
-**功能描述**: 自动生成 RSS Feed
-
-**实现要点**:
-
-- XML 格式 RSS 2.0
-- 自动更新机制
-- 分类订阅支持
-
-### 4. 文章归档（v2.3）
-
-**功能描述**: 按时间归档文章列表
-
-**设计方案**:
-
-- 年度归档页面
-- 月份归档页面
-- 时间轴展示
-
-### 5. 站点地图（v2.4）
-
-**功能描述**: SEO 优化的站点地图
-
-**实现要点**:
-
-- XML Sitemap 生成
-- 搜索引擎提交
-- 自动更新机制
 
 ## 🏗️ 技术架构
 
@@ -372,8 +841,7 @@ tail -f /bro/mdblog/logs/mdblog.log | grep -i webhook
                               ▼                          ▼
                        ┌─────────────────┐    ┌─────────────────┐
                        │   Search Index  │    │   HTTP Response │
-                       │   Tag Index     │    │   (HTML/JSON)   │
-                       │   Category Index│    │                 │
+                       │   Category Index│    │   (HTML/JSON)   │
                        └─────────────────┘    └─────────────────┘
 ```
 
@@ -382,20 +850,19 @@ tail -f /bro/mdblog/logs/mdblog.log | grep -i webhook
 #### 页面路由
 
 ```
-GET  /                     # 首页（文章列表）
-GET  /post/:id            # 文章详情
-GET  /category/:category  # 分类页面
-GET  /tag/:tag           # 标签页面
-GET  /about              # 关于页面
+GET  /                  # 首页
+GET  /post/:id          # 文章详情页
+GET  /category/:category # 分类页面
+GET  /search            # 搜索页面
+GET  /about             # 关于页面
 ```
 
 #### API 接口
 
 ```
-GET  /api/posts          # 文章列表API
-GET  /api/posts/:id      # 文章详情API
-GET  /api/categories     # 分类列表API
-GET  /api/tags          # 标签列表API
+GET  /api/posts         # 文章列表API
+GET  /api/posts/:id     # 文章详情API
+GET  /api/categories    # 分类列表API
 GET  /api/search        # 搜索API
 ```
 
@@ -413,18 +880,17 @@ GET  /health           # 健康检查
 ```go
 // Post 文章数据结构
 type Post struct {
-    ID          string    `json:"id"`          // 文章ID（路径）
+    ID          string    `json:"id"`          // 文章ID
     Title       string    `json:"title"`       // 标题
     Author      string    `json:"author"`      // 作者
     GitHubURL   string    `json:"github_url"`  // GitHub链接
-    Content     string    `json:"content"`     // Markdown内容
+    Content     string    `json:"content"`     // 原始内容
     HTML        string    `json:"html"`        // HTML内容
     Summary     string    `json:"summary"`     // 摘要
     Category    string    `json:"category"`    // 分类
     CreateTime  time.Time `json:"created_at"`  // 创建时间
     UpdateTime  time.Time `json:"updated_at"`  // 更新时间
     Description string    `json:"description"` // 描述
-    Tags        []string  `json:"tags"`        // 标签
     FilePath    string    `json:"file_path"`   // 文件路径
 }
 
@@ -432,7 +898,6 @@ type Post struct {
 type BlogData struct {
     Posts       map[string]*Post    // 文章索引
     Categories  map[string][]string // 分类索引
-    Tags        map[string][]string // 标签索引
     SearchIndex map[string][]string // 搜索索引
     LastUpdate  time.Time           // 最后更新时间
 }
@@ -471,13 +936,8 @@ Results:
 2. **输入验证**: 搜索参数验证
 3. **路径遍历保护**: 文件路径安全检查
 4. **CORS 配置**: 跨域请求控制
-
-### 计划安全增强
-
-1. **Webhook 签名验证**: HMAC 签名校验
-2. **Rate Limiting**: API 请求频率限制
-3. **HTTPS 强制**: TLS 加密传输
-4. **访问日志**: 安全审计日志
+5. **Webhook 签名验证**: HMAC-SHA256 签名校验
+6. **分支过滤**: 只处理指定分支的推送事件
 
 ## 📊 监控指标
 
@@ -492,38 +952,6 @@ Results:
 
 - **文章数量**: 加载的文章总数
 - **搜索频率**: 搜索 API 调用统计
-- **热门文章**: 访问频率统计（计划中）
-- **用户行为**: 页面访问统计（计划中）
-
-## 🎯 发展路线图
-
-### V1.0 - 核心功能（已完成）
-
-- ✅ Markdown 博客基础功能
-- ✅ 搜索和分页
-- ✅ 响应式设计
-- ✅ 单文件部署
-- ✅ 自动化部署
-
-### V1.1 - 增强功能（开发中）
-
-- 🚧 Webhook 自动同步
-- 📋 性能优化
-- 📋 错误处理完善
-
-### V2.0 - 用户体验（计划中）
-
-- 📋 主题系统
-- 📋 评论系统
-- 📋 RSS 订阅
-- 📋 文章归档
-
-### V3.0 - 高级功能（远期）
-
-- 📋 多语言支持
-- 📋 插件系统
-- 📋 管理后台
-- 📋 统计分析
 
 ## 🤝 贡献指南
 
