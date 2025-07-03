@@ -51,12 +51,13 @@ func (s *Server) handleIndex(c *gin.Context) {
 
 	// 渲染首页模板
 	s.renderTemplate(c, "posts/index.html", map[string]interface{}{
-		"Title":      "首页",
-		"Posts":      posts,
-		"Total":      total,
-		"Page":       page,
-		"PageSize":   pageSize,
-		"Categories": s.manager.GetAllCategories(),
+		"Title":       "首页",
+		"Posts":       posts,
+		"Total":       total,
+		"Page":        page,
+		"PageSize":    pageSize,
+		"Categories":  s.manager.GetAllCategories(),
+		"CurrentPage": "home",
 	})
 }
 
@@ -77,9 +78,11 @@ func (s *Server) handlePostDetail(c *gin.Context) {
 	}
 
 	s.renderTemplate(c, "posts/detail.html", map[string]interface{}{
-		"Title":      post.Title,
-		"Post":       post,
-		"Categories": s.manager.GetAllCategories(),
+		"Title":       post.Title,
+		"Post":        post,
+		"Categories":  s.manager.GetAllCategories(),
+		"CurrentPage": "category",
+		"Category":    post.Category,
 	})
 }
 
@@ -121,13 +124,14 @@ func (s *Server) handleCategory(c *gin.Context) {
 	log.Printf("分页结果: start = %d, end = %d, 实际返回文章数 = %d", start, end, len(posts))
 
 	s.renderTemplate(c, "posts/category.html", map[string]interface{}{
-		"Title":      category,
-		"Category":   category,
-		"Posts":      posts,
-		"Total":      total,
-		"Page":       page,
-		"PageSize":   pageSize,
-		"Categories": s.manager.GetAllCategories(),
+		"Title":       category,
+		"Category":    category,
+		"Posts":       posts,
+		"Total":       total,
+		"Page":        page,
+		"PageSize":    pageSize,
+		"Categories":  s.manager.GetAllCategories(),
+		"CurrentPage": "category",
 	})
 }
 
@@ -147,9 +151,10 @@ func (s *Server) handleSearchPage(c *gin.Context) {
 	result := s.manager.Search(query, page, pageSize)
 
 	s.renderTemplate(c, "search.html", map[string]interface{}{
-		"Title":      "搜索结果",
-		"Result":     result,
-		"Categories": s.manager.GetAllCategories(),
+		"Title":       "搜索结果",
+		"Result":      result,
+		"Categories":  s.manager.GetAllCategories(),
+		"CurrentPage": "search",
 	})
 }
 
@@ -158,17 +163,19 @@ func (s *Server) handleAbout(c *gin.Context) {
 	post, exists := s.manager.GetPost("about")
 	if !exists {
 		c.HTML(http.StatusNotFound, "404.html", gin.H{
-			"Title":      "页面未找到",
-			"Message":    "About页面不存在，请创建posts/about.md文件",
-			"Categories": s.manager.GetAllCategories(),
+			"Title":       "页面未找到",
+			"Message":     "About页面不存在，请创建posts/about.md文件",
+			"Categories":  s.manager.GetAllCategories(),
+			"CurrentPage": "404",
 		})
 		return
 	}
 
 	data := map[string]interface{}{
-		"Title":      post.Title,
-		"Post":       post,
-		"Categories": s.manager.GetAllCategories(),
+		"Title":       post.Title,
+		"Post":        post,
+		"Categories":  s.manager.GetAllCategories(),
+		"CurrentPage": "about",
 	}
 
 	s.renderTemplate(c, "posts/detail.html", data)
@@ -177,8 +184,9 @@ func (s *Server) handleAbout(c *gin.Context) {
 // handle404 处理404错误
 func (s *Server) handle404(c *gin.Context) {
 	c.HTML(http.StatusNotFound, "404.html", gin.H{
-		"Title":      "页面未找到",
-		"Message":    "",
-		"Categories": s.manager.GetAllCategories(),
+		"Title":       "页面未找到",
+		"Message":     "",
+		"Categories":  s.manager.GetAllCategories(),
+		"CurrentPage": "404",
 	})
 }

@@ -127,6 +127,7 @@ body {
   text-decoration: none;
   font-weight: 500;
   border-bottom: 1px solid #f5f5f5;
+  position: relative;
   transition: all 0.2s;
 }
 
@@ -138,6 +139,24 @@ body {
 
 .mobile-nav a:last-child {
   border-bottom: none;
+}
+
+.mobile-nav a.active {
+  background: #f8fbff;
+  color: #0056b3;
+  font-weight: 500;
+}
+
+.mobile-nav a.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 50%;
+  background: #0056b3;
+  border-radius: 0 2px 2px 0;
 }
 
 .logo {
@@ -159,7 +178,8 @@ body {
   font-size: 1.6rem; /* 16px，导航链接 */
   padding: 0.3rem 0.7rem;
   border-radius: 4px;
-  transition: background 0.2s, color 0.2s;
+  position: relative;
+  transition: all 0.2s ease;
 }
 .nav a:hover {
   background: #f0f4fa;
@@ -167,9 +187,21 @@ body {
 }
 
 .nav a.active {
+  background: #f8fbff;
+  color: #0056b3;
+  font-weight: 500;
+}
+
+.nav a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 3px;
   background: #0056b3;
-  color: #fff;
-  font-weight: 600;
+  border-radius: 2px;
 }
 .header-actions {
   display: flex;

@@ -12,11 +12,11 @@
 
     <!-- 桌面端导航 -->
     <nav class="nav desktop-nav">
-      <a href="/">首页</a>
+      <a href="/" {{if eq .CurrentPage "home"}}class="active"{{end}}>首页</a>
       {{range $category, $count := .Categories}}
-      <a href="/category/{{$category}}">{{$category}}</a>
+      <a href="/category/{{$category}}" {{if and (eq $.CurrentPage "category") (eq $.Category $category)}}class="active"{{end}}>{{$category}}</a>
       {{end}}
-      <a href="/about">About</a>
+      <a href="/about" {{if eq .CurrentPage "about"}}class="active"{{end}}>About</a>
     </nav>
 
     <div class="header-actions">
@@ -28,11 +28,11 @@
 
   <!-- 移动端导航菜单 -->
   <nav id="mobile-nav" class="mobile-nav">
-    <a href="/">首页</a>
+    <a href="/" {{if eq .CurrentPage "home"}}class="active"{{end}}>首页</a>
     {{range $category, $count := .Categories}}
-    <a href="/category/{{$category}}">{{$category}}</a>
+    <a href="/category/{{$category}}" {{if and (eq $.CurrentPage "category") (eq $.Category $category)}}class="active"{{end}}>{{$category}}</a>
     {{end}}
-    <a href="/about">About</a>
+    <a href="/about" {{if eq .CurrentPage "about"}}class="active"{{end}}>About</a>
   </nav>
 </header>
 
