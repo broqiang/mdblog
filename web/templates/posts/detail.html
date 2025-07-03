@@ -10,31 +10,48 @@
 
     <main class="flex-shrink-0 main">
       <div class="post-layout">
-        <article class="post-detail">
-          <header class="post-header">
-            <h1 class="post-title">{{.Post.Title}}</h1>
-            <div class="post-meta">
-              <div class="post-meta-row">
-                <span class="post-author">
-                  <i class="icon author-icon"></i>
-                  {{.Post.Author}}
-                </span>
-                <span class="post-date">
-                  <i class="icon time-icon"></i>
-                  Created {{.Post.CreateTime.Format "2006-01-02"}}
-                </span>
-                {{if .Post.UpdateTime.After .Post.CreateTime}}
-                <span class="post-updated">
-                  <i class="icon">✏️</i>
-                  Updated {{.Post.UpdateTime.Format "2006-01-02"}}
-                </span>
-                {{end}}
-              </div>
+        <!-- 左侧文档导航 (桌面端) -->
+        <aside class="post-nav" id="post-nav">
+          <div class="post-nav-content">
+            <div class="post-nav-header">
+              <h3>文档导航</h3>
             </div>
-          </header>
+            <nav class="post-nav-list" id="post-nav-list">
+              <!-- JavaScript 将在这里动态生成导航链接 -->
+            </nav>
+          </div>
+        </aside>
 
-          <div class="post-content">{{safeHTML .Post.HTML}}</div>
-        </article>
+        <!-- 右侧文章内容 -->
+        <div class="post-content-wrapper">
+          <article class="post-detail">
+            <header class="post-header">
+              <h1 class="post-title">{{.Post.Title}}</h1>
+              <div class="post-meta">
+                <div class="post-meta-row">
+                  <span class="post-author">
+                    <i class="icon author-icon"></i>
+                    {{.Post.Author}}
+                  </span>
+                  <span class="post-date">
+                    <i class="icon time-icon"></i>
+                    Created {{.Post.CreateTime.Format "2006-01-02"}}
+                  </span>
+                  {{if .Post.UpdateTime.After .Post.CreateTime}}
+                  <span class="post-updated">
+                    <i class="icon">✏️</i>
+                    Updated {{.Post.UpdateTime.Format "2006-01-02"}}
+                  </span>
+                  {{end}}
+                </div>
+              </div>
+            </header>
+
+            <div class="post-content" id="post-content">
+              {{safeHTML .Post.HTML}}
+            </div>
+          </article>
+        </div>
       </div>
     </main>
 

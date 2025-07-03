@@ -548,8 +548,114 @@ body {
 
 /* 文章详情页 */
 .post-layout {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  padding: 2rem 1.2rem;
+}
+
+/* 左侧文档导航 */
+.post-nav {
+  width: 280px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e3e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.post-nav-content {
+  padding: 1.5rem;
+}
+
+.post-nav-header {
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.post-nav-header h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.post-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-nav-item {
+  margin-bottom: 0.4rem;
+}
+
+.post-nav-link {
+  display: block;
+  padding: 0.6rem 0.8rem;
+  color: #666;
+  text-decoration: none;
+  font-size: 1.3rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+
+.post-nav-link:hover {
+  background: #f8f9fa;
+  color: #0056b3;
+  border-left-color: #0056b3;
+}
+
+.post-nav-link.active {
+  background: #e3f2fd;
+  color: #0056b3;
+  border-left-color: #0056b3;
+  font-weight: 500;
+}
+
+/* 不同层级的标题缩进 */
+.post-nav-link.level-1 {
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.post-nav-link.level-2 {
+  padding-left: 1.6rem;
+  font-size: 1.3rem;
+}
+
+.post-nav-link.level-3 {
+  padding-left: 2.4rem;
+  font-size: 1.2rem;
+  color: #777;
+}
+
+.post-nav-link.level-4 {
+  padding-left: 3.2rem;
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.post-nav-link.level-5,
+.post-nav-link.level-6 {
+  padding-left: 4rem;
+  font-size: 1.1rem;
+  color: #999;
+}
+
+/* 右侧内容区域 */
+.post-content-wrapper {
+  flex: 1;
+  min-width: 0; /* 防止flex item超出容器 */
 }
 
 .post-detail {
@@ -865,6 +971,22 @@ body {
   }
 
   /* 详情页平板端优化 */
+  .post-layout {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem 1rem;
+  }
+
+  /* 平板端隐藏导航 */
+  .post-nav {
+    display: none;
+  }
+
+  /* 平板端内容区域占满全宽 */
+  .post-content-wrapper {
+    width: 100%;
+  }
+
   .post-detail .post-meta-row {
     flex-direction: column;
     gap: 0.8rem;
@@ -959,6 +1081,18 @@ body {
   /* 文章详情页移动端样式 */
   .post-layout {
     padding: 1rem 0.5rem;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* 移动端隐藏导航 */
+  .post-nav {
+    display: none;
+  }
+
+  /* 移动端内容区域占满全宽 */
+  .post-content-wrapper {
+    width: 100%;
   }
 
   .post-detail {
