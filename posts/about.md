@@ -2,11 +2,9 @@
 title: "关于我"
 author: "BroQiang"
 date: 2024-01-01T00:00:00Z
-category: "about"
-tags: []
 ---
 
-欢迎来到 BroQiang 的技术博客！
+欢迎来到 BroQiang 的技术博客！ Hello World!
 
 这里分享关于 Go、Linux、Flutter、PHP、MySQL、Vue3 等技术的学习心得和实践经验。
 
@@ -18,7 +16,7 @@ tags: []
 
 - <img src="/static/images/github-mark.svg" alt="GitHub" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 2px; display: inline-block;"> **GitHub**: [broqiang](https://github.com/broqiang)
 
-- <img src="/static/images/gitee.svg" alt="Gitee" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 2px; display: inline-block;"> **GitHub**: [broqiang](https://gitee.com/broqiang)
+- <img src="/static/images/gitee.svg" alt="Gitee" style="width: 22px; height: 22px; vertical-align: middle; margin-right: 2px; display: inline-block;"> **Gitee**: [broqiang](https://gitee.com/broqiang)
 
 ## 关于博客
 

@@ -1,11 +1,8 @@
 ---
 title: "Ubuntu 17.10 安装 MShybrid 显卡"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-01-13T01:50:58
 updated_at: 2018-01-13T01:50:58
-description: "因为个人电脑雷神 st pro 是MShybrid的核显，记录下显卡驱动的安装过程。"
-tags: ["linux"]
 ---
 
 因为 雷神 st pro 是 MShybrid 的核显，ubuntu 对 MShybrid 的核显模式支持不好，所以进入到安装界面就会黑屏或卡死，使用下面方式进行安装。

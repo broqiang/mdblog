@@ -1,11 +1,8 @@
 ---
 title: "Linux 编译安装 Redis"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-05-20T02:15:46
 updated_at: 2017-05-20T02:15:46
-description: ""
-tags: ["Linux", "redis"]
 ---
 
 [官方下载地址](https://redis.io/download)

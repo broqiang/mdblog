@@ -1,11 +1,8 @@
 ---
 title: "mysql 8.0 使用简单密码"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-13T13:57:35
 updated_at: 2018-06-13T13:57:35
-description: "修改 mysql 8.0 的默认密码策略，允许设置简单密码"
-tags: ["linux", "mysql"]
 ---
 
 最近测试环境换上了 mysql 8.0.1 ，发现默认只允许使用非常复杂的密码： 大小写英文/数字/特殊字符。 这个对于个人开发环境来说就有点啰嗦了，毕竟要经常使用命令行来输入，每次都输入这么长的密码有点麻烦了。

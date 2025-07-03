@@ -1,11 +1,8 @@
 ---
 title: "HTTP 客户端 - 基础"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-16T21:50:46
 updated_at: 2018-06-16T21:50:46
-description: "Go 封装了非常方便的客户端方法，不再需要借助第三方包，就可以实现客户端的请求。本篇文章主要将的是 Get  、 Post 、PostForm 三个基础的方法。"
-tags: ["go", "http"]
 ---
 
 Go 封装了非常方便的客户端方法，不再需要借助第三方包，就可以实现客户端的请求。本篇文章主要将的是 Get 、 Post 、PostForm 三个基础的方法。

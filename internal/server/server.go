@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"mdblog/internal/config"
@@ -182,6 +183,22 @@ func (s *Server) reloadData() error {
 		// 只处理.md文件
 		if filepath.Ext(path) != ".md" {
 			return nil
+		}
+
+		// 检查是否是posts根目录下的文件
+		relPath, err := filepath.Rel(postsDir, path)
+		if err != nil {
+			log.Printf("计算相对路径失败 %s: %v", path, err)
+			return nil
+		}
+
+		// 如果是posts根目录下的文件（不包含路径分隔符），只允许about.md
+		if !strings.Contains(relPath, string(filepath.Separator)) {
+			filename := filepath.Base(path)
+			if filename != "about.md" {
+				log.Printf("跳过posts根目录下的文件: %s", path)
+				return nil
+			}
 		}
 
 		// 解析Markdown文件

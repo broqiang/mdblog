@@ -1,11 +1,8 @@
 ---
 title: "SSH 自动登录脚本"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-03-14T01:42:26
 updated_at: 2018-03-14T01:42:26
-description: "记录了 SSH 密钥登录，并写了一个方便用来登录的脚本"
-tags: ["linux"]
 ---
 
 ## 密钥登录（免密码）

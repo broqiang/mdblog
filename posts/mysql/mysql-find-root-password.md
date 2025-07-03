@@ -1,11 +1,8 @@
 ---
 title: "Mysql root 密码找回"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-02-12T02:33:32
 updated_at: 2017-02-12T02:33:32
-description: "Mysql 5.7 之后的版本密码找回方式，所以特意记录了一下，包括老版本和新版本的找回方式"
-tags: ["linux", "mysql"]
 ---
 
 > MySQL 从 5.7.6 开始，user 表结构发生了变化，重置密码的方式不太相同，请根据 MySQL 的版本来操作。

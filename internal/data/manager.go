@@ -3,6 +3,7 @@ package data
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -318,14 +319,17 @@ func (m *Manager) GetCategoryFromPath(filePath string) string {
 	return ""
 }
 
-// GetAllPosts 获取所有文章，按更新时间倒序排序
+// GetAllPosts 获取所有文章（按更新时间倒序排序）
 func (m *Manager) GetAllPosts() []*Post {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 
 	var posts []*Post
 	for _, post := range m.data.Posts {
-		posts = append(posts, post)
+		// 跳过about文章，它只在About页面显示
+		if post.ID != "about" {
+			posts = append(posts, post)
+		}
 	}
 
 	// 按更新时间倒序排序（时间最新的在前面）
@@ -334,4 +338,68 @@ func (m *Manager) GetAllPosts() []*Post {
 	})
 
 	return posts
+}
+
+// InitializeData 初始化数据，遍历并加载所有Markdown文件
+func (m *Manager) InitializeData(parser Parser) error {
+	// 遍历posts目录
+	err := filepath.Walk(m.postsDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// 跳过目录
+		if info.IsDir() {
+			return nil
+		}
+
+		// 只处理.md文件
+		if filepath.Ext(path) != ".md" {
+			return nil
+		}
+
+		// 检查是否是posts根目录下的文件
+		relPath, err := filepath.Rel(m.postsDir, path)
+		if err != nil {
+			log.Printf("计算相对路径失败 %s: %v", path, err)
+			return nil
+		}
+
+		// 如果是posts根目录下的文件（不包含路径分隔符），只允许about.md
+		if !strings.Contains(relPath, string(filepath.Separator)) {
+			filename := filepath.Base(path)
+			if filename != "about.md" {
+				log.Printf("跳过posts根目录下的文件: %s", path)
+				return nil
+			}
+		}
+
+		// 解析Markdown文件
+		post, err := parser.ParseFile(path, m.postsDir)
+		if err != nil {
+			log.Printf("解析文件失败 %s: %v", path, err)
+			return nil // 继续处理其他文件
+		}
+
+		// 添加到数据管理器
+		m.UpdatePost(post)
+		log.Printf("加载文章: %s", post.Title)
+
+		return nil
+	})
+
+	if err != nil {
+		return fmt.Errorf("遍历posts目录失败: %w", err)
+	}
+
+	// 清理重复数据
+	m.CleanupDuplicates()
+
+	log.Printf("数据初始化完成，共加载 %d 篇文章", len(m.data.Posts))
+	return nil
+}
+
+// Parser 定义Markdown解析器接口
+type Parser interface {
+	ParseFile(filePath, postsDir string) (*Post, error)
 }

@@ -1,11 +1,8 @@
 ---
 title: "Linux 下 Lantern 关闭后不清除代理"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-01-12T01:53:30
 updated_at: 2018-01-12T01:53:30
-description: "自己写了个脚本，来解决 Linux 下蓝灯不能自动清楚代理"
-tags: ["linux"]
 ---
 
 个人觉得这个是一个 bug，Issues 中也有人提出了，不过官方一直没有解决，平时使用起来比较麻烦，只能自己写一个脚本来解决一下，虽然也不是很优雅，不过比起每次都手动去配置要方便一些。

@@ -1,11 +1,8 @@
 ---
 title: "Ubuntu PHP 开发环境配置"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-12-27T01:58:46
 updated_at: 2017-12-27T01:58:46
-description: "记录了用 Ubuntu 作为开发环境的一些简单配置，此文档是基于 Ubuntu 17.10 编写"
-tags: ["linux", "php"]
 ---
 
 > 版本 17.10 64 位（ubuntu-17.10-desktop-amd64.iso）

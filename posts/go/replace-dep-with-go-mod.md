@@ -1,11 +1,8 @@
 ---
 title: "将 dep 更换为 go mod"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-08-28T11:10:07
 updated_at: 2019-08-28T11:10:07
-description: ""
-tags: ["go"]
 ---
 
 ## 原因

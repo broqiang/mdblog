@@ -1,11 +1,8 @@
 ---
 title: "Go 不使用加号实现 A+B"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-17T20:32:41
 updated_at: 2018-06-17T20:32:41
-description: "Golang 不使用加号实现 A+B，此问题来自： https://www.lintcode.com/problem/a-b-problem/description"
-tags: ["go"]
 ---
 
 Go 不使用加号实现 A+B，此问题来自： [lintcode](https://www.lintcode.com/problem/a-b-problem/description)

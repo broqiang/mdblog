@@ -1,5 +1,11 @@
 package config
 
+import (
+	"os"
+	"path/filepath"
+	"strings"
+)
+
 // 应用配置常量
 const (
 	// 服务器配置
@@ -28,3 +34,39 @@ const (
 	// 搜索配置
 	MaxSearchResults = 100
 )
+
+// GetPostsDirectory 获取posts目录路径
+// 如果指定了postsDir参数则使用，否则自动检测
+func GetPostsDirectory(postsDir string) (string, error) {
+	if postsDir != "" {
+		return postsDir, nil
+	}
+
+	// 获取可执行文件所在目录
+	execPath, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+	execDir := filepath.Dir(execPath)
+
+	// 检查是否在go run模式下（临时文件目录）
+	if strings.Contains(execPath, "go-build") {
+		// go run模式，使用当前工作目录
+		pwd, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Join(pwd, "posts"), nil
+	}
+
+	// 正常编译的可执行文件，使用可执行文件同级目录
+	return filepath.Join(execDir, "posts"), nil
+}
+
+// ValidatePostsDirectory 验证posts目录是否存在
+func ValidatePostsDirectory(postsDir string) error {
+	if _, err := os.Stat(postsDir); os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}

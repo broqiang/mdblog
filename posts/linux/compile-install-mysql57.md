@@ -1,11 +1,8 @@
 ---
 title: "Linux 编译安装 Mysql5.7"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-04-18T02:26:09
 updated_at: 2017-04-18T02:26:09
-description: "记录了 Linux（Ubuntu、CentOS、Fedora）下编译安装 MySQL 5.7，当前已经更新到 5.7.21"
-tags: ["linux", "mysql"]
 ---
 
 此文档支持下面系统，其他发行版本未测试过

@@ -1,11 +1,8 @@
 ---
 title: "Golang 实现和 Laravel 类似的 .env 配置"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-24T23:20:51
 updated_at: 2018-06-24T23:20:51
-description: "Golang 实现和 Laravel 类似的 .env 配置"
-tags: ["go"]
 ---
 
 在使用 Laravel 的时候，会觉得它是优雅的，可能 Golang 主要的领域不是在 Web 开发中，也可能是它还太年轻，没有发现一个像 Laravel 一样优雅的框架，有一些以前用 Laravel 保留下的习惯，现在没有就会觉得很别扭。

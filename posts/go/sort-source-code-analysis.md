@@ -1,11 +1,8 @@
 ---
 title: "sort 包源码分析"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-06-26T09:40:10
 updated_at: 2019-06-26T09:40:10
-description: ""
-tags: ["go", "源码分析"]
 ---
 
 最近自定义 sort 排序的时候， 发现了个问题， 就是根据 struct 的一个字段排序的时候， 排序完了

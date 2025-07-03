@@ -1,11 +1,8 @@
 ---
 title: "Ubuntu 18.04 设置 ulimit"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-05-04T22:35:03
 updated_at: 2019-05-04T22:35:03
-description: "Ubuntu 18.04 设置 ulimit ，解决 too many open files 的问题。"
-tags: ["linux"]
 ---
 
 一直用 Ubuntu 做桌面，本来以为很简单就可以设置了。

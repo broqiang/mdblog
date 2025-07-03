@@ -1,11 +1,8 @@
 ---
 title: "macos 配置"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2024-06-16T23:01:35
 updated_at: 2024-06-16T23:01:48
-description: "Mac OS 配置"
-tags: ["flutter", "macos"]
 ---
 
 # Mac OS 配置

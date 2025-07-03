@@ -1,11 +1,8 @@
 ---
 title: "Gin 框架中文文档（翻译）"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-07-13T23:42:54
 updated_at: 2018-07-13T23:42:54
-description: "这是一个翻译文档，不过有些过时了，官方已经有最新的文档了，不过辛辛苦苦翻译了，还是保留了。"
-tags: ["go", "翻译"]
 ---
 
 这几天在使用 Gin ，英文文档找东西有点慢，就尝试着翻译下，欢迎围观，欢迎指出错误。

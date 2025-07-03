@@ -1,11 +1,8 @@
 ---
 title: "KVM 安装"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-02T11:32:42
 updated_at: 2018-06-02T11:32:42
-description: ""
-tags: ["linux"]
 ---
 
 KVM 安装笔记

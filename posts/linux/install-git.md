@@ -1,11 +1,8 @@
 ---
 title: "Git 安装"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-02-18T02:31:03
 updated_at: 2017-02-18T02:31:03
-description: "记录了 Ubuntu、Fedora、CentOS 及源码编译安装，并做了安装后的简单配置。"
-tags: ["linux", "git"]
 ---
 
 ## 获取最新安装包

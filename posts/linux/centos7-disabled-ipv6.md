@@ -1,11 +1,8 @@
 ---
 title: "CentOS 7 禁用 IPv6"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-10-25T02:03:25
 updated_at: 2017-10-25T02:03:25
-description: ""
-tags: ["linux"]
 ---
 
 IPv6 现在一般只在高校中推行，一般用来资源共享与下载。所以一般情况下不会用到，如果确定用不到，就可以将其禁用，可以提高一下网络的速度。

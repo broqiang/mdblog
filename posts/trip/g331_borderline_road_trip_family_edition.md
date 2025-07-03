@@ -1,10 +1,8 @@
 ---
 title: "35 天逆时针 G331 国境线亲子自驾行程"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2026-07-02T01:53
 updated_at: 2026-07-02T01:53
-tags: ["flutter"]
 ---
 
 全程自驾 · 7 月 17 日北京出发 · 严格沿 G331 国境线  

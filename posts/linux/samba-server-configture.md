@@ -1,11 +1,8 @@
 ---
 title: "Samba 服务器配置"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-01-05T01:56:11
 updated_at: 2018-01-05T01:56:11
-description: "这里的示例使用的是 Ubuntu，CentOS 和 Fedora 也类似。"
-tags: ["linux"]
 ---
 
 ## 服务器端配置

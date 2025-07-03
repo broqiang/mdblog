@@ -1,11 +1,8 @@
 ---
 title: "HTTP 客户端 - 使用 Client 类型"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-17T01:35:15
 updated_at: 2018-06-17T01:35:15
-description: "主要介绍了 Client 类型以及 Do 和 Head 的使用。"
-tags: ["go", "http"]
 ---
 
 这章主要介绍了 Client 类型以及 Do 和 Head 的使用。

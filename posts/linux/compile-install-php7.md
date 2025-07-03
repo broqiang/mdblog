@@ -1,11 +1,8 @@
 ---
 title: "Linux 编译安装 PHP 7"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-04-18T02:24:14
 updated_at: 2017-04-18T02:24:14
-description: "Linux（Ubuntu 16.10 / Ubuntu 17.10 / CentOS 7 / Fedora 26 / Fedora 27） 编译安装 PHP 7"
-tags: ["linux", "php"]
 ---
 
 ## 开始之前

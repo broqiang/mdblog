@@ -1,11 +1,8 @@
 ---
 title: "archive/tar 实现打包压缩及解压"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-28T20:07:39
 updated_at: 2018-06-28T20:07:39
-description: "通过 archive/tar 包实现 Golang 对文件的打包压缩及解包，tar.gz 这种格式"
-tags: ["go"]
 ---
 
 这个包比较简单，就是将文件进行打包和解包，要是熟悉 Linux 下的 tar 命令这个就很好理解了。 主要是通过 tar.Reader 读取 tar 包，通过 tar.Writer 写入 tar

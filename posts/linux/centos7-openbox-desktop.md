@@ -1,11 +1,8 @@
 ---
 title: "CentOS 7 极简桌面环境"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-06-13T11:03:00
 updated_at: 2019-06-13T11:03:00
-description: ""
-tags: ["linux"]
 ---
 
 最近因为要使用 Windows 操作系统， 在虚拟机中使用 Ubuntu 18.04 感觉有些卡， 比物理机直接使用反应慢了很多，

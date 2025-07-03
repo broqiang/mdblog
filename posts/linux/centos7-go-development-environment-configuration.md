@@ -1,11 +1,8 @@
 ---
 title: "CentOS7 Go 开发环境配置"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-05T19:03:14
 updated_at: 2018-06-05T19:03:14
-description: "CentOS7.5 G语言开发环境配置"
-tags: ["linux", "go"]
 ---
 
 因为最近将开发环境从 Ubuntu 换成了 CentOS ，所以写了这个文档记录一下。

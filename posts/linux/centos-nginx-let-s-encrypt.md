@@ -1,11 +1,8 @@
 ---
 title: "CentOS 下 Nginx 配置 Let's Encrypt 证书"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-03-15T01:38:12
 updated_at: 2018-03-15T01:38:12
-description: "记录了 CentOS 7 下 Let's Encrypt 单域名及通配符域名的申请已经 Nginx 配置 https 服务"
-tags: ["linux", "nginx"]
 ---
 
 体验了下免费的 ssl 证书，看起来很好用。

@@ -1,11 +1,8 @@
 ---
 title: "我收藏的 flutter 包"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2025-06-27T17:02:14
 updated_at: 2025-06-27T17:02:14
-description: "我收藏的 flutter 包"
-tags: ["flutter"]
 ---
 
 # 我收藏的 flutter 包

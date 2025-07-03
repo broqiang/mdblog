@@ -1,11 +1,8 @@
 ---
 title: "Socket 是什么"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-10-06T02:05:25
 updated_at: 2017-10-06T02:05:25
-description: "简单的说明了网络7层协议、TCP/IP、Socket 及三次握手"
-tags: ["linux"]
 ---
 
 经常会提到 Socket ，但是绝大多数人对于这个还是一个很蒙圈的状态，所以从网上找了一堆的资料，简单的将 Socket 做一个详细一些的解释。

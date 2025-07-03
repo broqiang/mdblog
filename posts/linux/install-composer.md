@@ -1,11 +1,8 @@
 ---
 title: "Linux 下安装 Composer"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-02-21T02:28:49
 updated_at: 2017-02-21T02:28:49
-description: ""
-tags: ["linux", "php"]
 ---
 
 ## 获取软件

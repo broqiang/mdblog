@@ -1,11 +1,8 @@
 ---
 title: "archive/zip 实现压缩及解压"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2018-06-29T14:20:08
 updated_at: 2018-06-29T14:20:08
-description: "go archive/zip 标准库使用示例"
-tags: ["go"]
 ---
 
 看标准库文档，就会发现， archive/zip 和 archive/tar 看起来方法名什么的都很像。使用起来也差不多，如果是按照我的文档顺序看到的这篇文档，上一篇 tar 中已经都介绍过了，这里就不再做过多的说明。

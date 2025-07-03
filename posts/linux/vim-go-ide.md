@@ -1,11 +1,8 @@
 ---
 title: "将 vim 打造成 go 语言的 ide"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-04-23T00:01:16
 updated_at: 2019-04-25T00:01:16
-description: "通过对 vim 的配置，可以让 vim 像 ide 一样飞起来。"
-tags: ["linux", "go", "vim", "ide"]
 ---
 
 通过配置，使得 vim 可以看起来像 ide 一样来开发 Go 。

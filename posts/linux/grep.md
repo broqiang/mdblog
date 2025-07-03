@@ -1,11 +1,8 @@
 ---
 title: "grep 详细说明"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-05-28T14:52:43
 updated_at: 2019-05-28T14:52:43
-description: "详细记录了 grep 的使用"
-tags: ["linux"]
 ---
 
 grep 这个命令使用了很久了，一直没有太深入的去了解过， 基本只使用到了最基本的应用，今天详细的

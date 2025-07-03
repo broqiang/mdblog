@@ -1,11 +1,8 @@
 ---
 title: "Go 编写 Web 应用"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-04-02T22:54:51
 updated_at: 2019-04-02T22:54:51
-description: "这是一篇官方的 https://golang.org/doc/articles/wiki 的翻译， 描述了怎样使用 go 的 http 包快速创建一个 web 应用"
-tags: ["go", "翻译"]
 ---
 
 这是一篇官方的 [Writing Web Applications](https://golang.org/doc/articles/wiki) 的翻译

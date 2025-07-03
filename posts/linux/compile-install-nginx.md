@@ -1,11 +1,8 @@
 ---
 title: "Linux 编译安装 Nginx"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2017-04-18T02:21:44
 updated_at: 2017-04-18T02:21:44
-description: "记录了当前最新稳定版的 nginx 1.12.2 的编译安装过程，并进行了 PHP 的配置。"
-tags: ["linux", "nginx"]
 ---
 
 当前最新稳定版本: 1.12.2

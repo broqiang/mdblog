@@ -1,11 +1,8 @@
 ---
 title: "httprouter 源码分析"
 author: "BroQiang"
-github_url: "https://broqiang.com"
 created_at: 2019-04-17T01:05:48
 updated_at: 2019-04-17T01:05:48
-description: ""
-tags: ["go", "源码分析"]
 ---
 
 关于 [httprouter](https://github.com/julienschmidt/httprouter) 本身就不过多说了，可以直接去查看源码及 README 。
