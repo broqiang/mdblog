@@ -23,7 +23,7 @@
 
 ### 文章详情
 
-![文章详情](https://image.broqiang.com/mdblog/mdblog_detail.png)
+![文章详情](https://image.broqiang.com/mdblog/mdblog_detail_v2.png)
 
 ## 🚀 快速开始
 
