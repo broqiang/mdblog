@@ -80,12 +80,24 @@ func (s *Server) handleGiteeWebhook(c *gin.Context) {
 		return
 	}
 	postsDir := s.manager.GetPostsDir()
-	cmd := exec.Command("git", "pull")
-	cmd.Dir = postsDir
-	cmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Git pull 失败", "details": string(output)})
+
+	// 首先执行 git fetch --all 获取最新的远程分支信息
+	fetchCmd := exec.Command("git", "fetch", "--all")
+	fetchCmd.Dir = postsDir
+	fetchCmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
+	fetchOutput, fetchErr := fetchCmd.CombinedOutput()
+	if fetchErr != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Git fetch 失败", "details": string(fetchOutput)})
+		return
+	}
+
+	// 然后执行 git reset --hard origin/main 强制同步到远程分支
+	resetCmd := exec.Command("git", "reset", "--hard", "origin/main")
+	resetCmd.Dir = postsDir
+	resetCmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
+	resetOutput, resetErr := resetCmd.CombinedOutput()
+	if resetErr != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Git reset 失败", "details": string(resetOutput)})
 		return
 	}
 	if reloadErr := s.reloadData(); reloadErr != nil {
@@ -94,6 +106,7 @@ func (s *Server) handleGiteeWebhook(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message":    "同步成功",
+		"method":     "fetch + reset --hard",
 		"branch":     "main",
 		"commits":    len(payload.Commits),
 		"repository": payload.Repository.Name,
