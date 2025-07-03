@@ -1,0 +1,418 @@
+{{define "search.html"}}
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-100">
+  <head>
+    {{template "layouts/head.html" .}}
+  </head>
+
+  <body class="d-flex flex-column h-100">
+    {{template "layouts/header.html" .}}
+
+    <main class="flex-shrink-0 main">
+      <div class="container">
+        <div class="search-header">
+          <h1 class="search-title">搜索结果</h1>
+          {{if .Result.Query}}
+          <p class="search-info">
+            关键词："<strong>{{.Result.Query}}</strong>" 共找到
+            <strong>{{.Result.Total}}</strong> 篇相关文章
+          </p>
+          {{else}}
+          <p class="search-info">请输入搜索关键词</p>
+          {{end}}
+
+          <!-- 搜索框 -->
+          <div class="search-box-container">
+            <form class="search-form" action="/search" method="GET">
+              <div class="search-input-group">
+                <input
+                  type="text"
+                  name="q"
+                  class="search-input"
+                  placeholder="搜索文章标题、内容..."
+                  value="{{.Result.Query}}"
+                  autocomplete="off"
+                />
+                <button type="submit" class="search-button">
+                  <svg
+                    class="search-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                  </svg>
+                  搜索
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {{if .Result.Posts}}
+        <div class="search-results">
+          {{range .Result.Posts}}
+          <article class="search-result-item">
+            <div class="result-header">
+              <h2 class="result-title">
+                <a href="/post/{{.ID}}">{{.Title}}</a>
+              </h2>
+              <div class="result-meta">
+                <span class="result-author">
+                  <i class="icon author-icon"></i>
+                  {{.Author}}
+                </span>
+                <span class="result-date">
+                  <i class="icon time-icon"></i>
+                  {{.CreateTime.Format "2006-01-02 15:04"}}
+                </span>
+                {{if .Category}}
+                <span class="result-category">
+                  <i class="icon category-icon"></i>
+                  <a href="/category/{{.Category}}">{{.Category}}</a>
+                </span>
+                {{end}}
+              </div>
+            </div>
+
+            <div class="result-summary">{{.Summary}}</div>
+
+            {{if .Tags}}
+            <div class="result-tags">
+              {{range .Tags}}
+              <a href="/tag/{{.}}" class="tag-link">🏷️ {{.}}</a>
+              {{end}}
+            </div>
+            {{end}}
+          </article>
+          {{end}}
+        </div>
+
+        {{if gt .Result.Total .Result.PageSize}}
+        <div class="pagination">
+          {{if gt .Result.Page 1}}
+          <a
+            href="/search?q={{.Result.Query}}&page={{subtract .Result.Page 1}}"
+            class="page-link prev"
+          >
+            <span>← 上一页</span>
+          </a>
+          {{end}}
+
+          <div class="page-numbers">
+            {{$currentPage := .Result.Page}} {{$totalPages := ceil .Result.Total
+            .Result.PageSize}} {{$startPage := max 1 (subtract $currentPage 2)}}
+            {{$endPage := min $totalPages (add $currentPage 2)}} {{if gt
+            $startPage 1}}
+            <a href="/search?q={{.Result.Query}}&page=1" class="page-number"
+              >1</a
+            >
+            {{if gt $startPage 2}}<span class="page-ellipsis">...</span>{{end}}
+            {{end}} {{range $i := seq $startPage $endPage}} {{if eq $i
+            $currentPage}}
+            <span class="page-number current">{{$i}}</span>
+            {{else}}
+            <a
+              href="/search?q={{$.Result.Query}}&page={{$i}}"
+              class="page-number"
+              >{{$i}}</a
+            >
+            {{end}} {{end}} {{if lt $endPage $totalPages}} {{if lt $endPage
+            (subtract $totalPages 1)}}<span class="page-ellipsis">...</span
+            >{{end}}
+            <a
+              href="/search?q={{.Result.Query}}&page={{$totalPages}}"
+              class="page-number"
+              >{{$totalPages}}</a
+            >
+            {{end}}
+          </div>
+
+          {{if lt .Result.Page (ceil .Result.Total .Result.PageSize)}}
+          <a
+            href="/search?q={{.Result.Query}}&page={{add .Result.Page 1}}"
+            class="page-link next"
+          >
+            <span>下一页 →</span>
+          </a>
+          {{end}}
+        </div>
+        {{end}} {{else}} {{if .Result.Query}}
+        <div class="no-results">
+          <div class="no-results-icon">🔍</div>
+          <h3>未找到相关结果</h3>
+          <p>
+            抱歉，没有找到与 "<strong>{{.Result.Query}}</strong>" 相关的文章。
+          </p>
+          <div class="search-suggestions">
+            <h4>建议：</h4>
+            <ul>
+              <li>检查关键词拼写是否正确</li>
+              <li>尝试使用不同的关键词</li>
+              <li>使用更通用的搜索词</li>
+            </ul>
+          </div>
+          <a href="/" class="btn btn-primary">浏览所有文章</a>
+        </div>
+        {{end}} {{end}}
+      </div>
+    </main>
+
+    {{template "layouts/footer.html" .}} {{template "layouts/js.html" .}}
+
+    <style>
+      .search-header {
+        text-align: center;
+        margin: 2rem 0;
+        padding: 2rem;
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        border-radius: 1rem;
+        color: white;
+      }
+
+      .search-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      .search-info {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+      }
+
+      .search-box-container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .search-form {
+        width: 100%;
+      }
+
+      .search-input-group {
+        display: flex;
+        background: white;
+        border-radius: 2rem;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .search-input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: none;
+        font-size: 1.1rem;
+        outline: none;
+        color: #2c3e50;
+      }
+
+      .search-button {
+        padding: 1rem 2rem;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .search-button:hover {
+        background: #c0392b;
+      }
+
+      .search-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      .search-results {
+        margin: 2rem 0;
+      }
+
+      .search-result-item {
+        background: white;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .search-result-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .result-header {
+        margin-bottom: 1rem;
+      }
+
+      .result-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .result-title a {
+        color: #2c3e50;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .result-title a:hover {
+        color: #3498db;
+      }
+
+      .result-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #7f8c8d;
+      }
+
+      .result-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .result-meta a {
+        color: #3498db;
+        text-decoration: none;
+      }
+
+      .result-meta a:hover {
+        text-decoration: underline;
+      }
+
+      .result-summary {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #34495e;
+        margin-bottom: 1rem;
+      }
+
+      .result-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .tag-link {
+        background: #ecf0f1;
+        padding: 0.3rem 0.8rem;
+        border-radius: 1rem;
+        font-size: 0.9rem;
+        color: #2c3e50;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+
+      .tag-link:hover {
+        background: #bdc3c7;
+        color: #2c3e50;
+        text-decoration: none;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #7f8c8d;
+      }
+
+      .no-results-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+
+      .no-results h3 {
+        font-size: 1.8rem;
+        color: #34495e;
+        margin-bottom: 1rem;
+      }
+
+      .no-results p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+
+      .search-suggestions {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin: 2rem auto;
+        max-width: 400px;
+        text-align: left;
+      }
+
+      .search-suggestions h4 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+      }
+
+      .search-suggestions ul {
+        margin: 0;
+        padding-left: 1.5rem;
+      }
+
+      .search-suggestions li {
+        margin-bottom: 0.5rem;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+      }
+
+      @media (max-width: 768px) {
+        .search-title {
+          font-size: 2rem;
+        }
+
+        .search-header {
+          margin: 1rem;
+          padding: 1.5rem;
+        }
+
+        .search-input-group {
+          flex-direction: column;
+          border-radius: 1rem;
+        }
+
+        .search-button {
+          border-radius: 0 0 1rem 1rem;
+          justify-content: center;
+        }
+
+        .result-meta {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .search-result-item {
+          margin: 1rem;
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </body>
+</html>
+{{end}}

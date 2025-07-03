@@ -154,7 +154,10 @@ func (s *Server) initTemplates() {
 			"layouts/js.html",
 			"posts/index.html",
 			"posts/detail.html",
-			"posts/category.html")
+			"posts/category.html",
+			"404.html",
+			"tag.html",
+			"search.html")
 		if err != nil {
 			log.Fatalf("解析嵌入模板失败: %v", err)
 		}
@@ -249,6 +252,9 @@ func (s *Server) setupRoutes() {
 	s.engine.GET("/tag/:tag", s.handleTag)
 	s.engine.GET("/search", s.handleSearchPage)
 	s.engine.GET("/about", s.handleAbout)
+
+	// 404处理器 - 必须放在所有路由的最后
+	s.engine.NoRoute(s.handle404)
 }
 
 // Start 启动服务器
@@ -579,6 +585,15 @@ func (s *Server) handleSearch(c *gin.Context) {
 
 func (s *Server) handleGiteeWebhook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Webhook received"})
+}
+
+// handle404 处理404错误
+func (s *Server) handle404(c *gin.Context) {
+	c.HTML(http.StatusNotFound, "404.html", gin.H{
+		"Title":      "页面未找到",
+		"Message":    "",
+		"Categories": s.dataManager.GetAllCategories(),
+	})
 }
 
 // renderTemplate 渲染模板
